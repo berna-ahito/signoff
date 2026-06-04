@@ -1,0 +1,12 @@
+fastapi  # web framework
+uvicorn[standard]  # ASGI server
+sqlalchemy  # ORM (sync-first, async-optional later)
+alembic  # DB migrations
+python-jose[cryptography]  # JWT encode/decode
+passlib[bcrypt]  # password hashing
+pydantic[email]  # validation + EmailStr type
+pydantic-settings  # Settings from env vars
+python-dotenv  # load .env into os.environ
+httpx  # test client for FastAPI TestClient
+pytest  # test runner
+pytest-cov  # coverage reporting
