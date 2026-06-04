@@ -36,6 +36,7 @@ export function DetailPage({ role }: Props) {
   const loadRequest = useCallback(async () => {
     if (!id) return
     setLoading(true)
+    setError(null)
     try {
       const data = await getRequest(parseInt(id, 10))
       setRequest(data)

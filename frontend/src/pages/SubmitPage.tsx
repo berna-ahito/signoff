@@ -58,7 +58,7 @@ export function SubmitPage() {
         </div>
       </div>
 
-      <form noValidate aria-label="New purchase request form">
+      <form noValidate aria-label="New purchase request form" onSubmit={(e) => handleSubmit(e, true)}>
         <div className="card">
           <div className="card-header">
             <span className="card-title">Request Details</span>

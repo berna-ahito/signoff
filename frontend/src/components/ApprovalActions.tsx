@@ -34,7 +34,8 @@ export function ApprovalActions({ request, role, onDecision }: Props) {
       await decide(request.id, { decision, note: note || undefined })
       onDecision()
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'Failed to submit decision'
+      const axiosErr = e as { response?: { data?: { detail?: string } }; message?: string }
+      const msg = axiosErr?.response?.data?.detail ?? axiosErr?.message ?? 'Failed to submit decision'
       setError(msg)
     } finally {
       setLoading(false)
