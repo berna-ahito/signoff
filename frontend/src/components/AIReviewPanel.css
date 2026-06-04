@@ -1,0 +1,120 @@
+.ai-panel {
+  margin-top: 0;
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ai-summary {
+  font-size: 13.5px;
+  color: var(--color-text);
+  line-height: 1.6;
+  padding: 10px 12px;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--color-primary);
+}
+
+.ai-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.ai-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.risk-low {
+  background: var(--badge-approved-bg);
+  color: var(--badge-approved-text);
+}
+
+.risk-medium {
+  background: var(--badge-pending-bg);
+  color: var(--badge-pending-text);
+}
+
+.risk-high {
+  background: var(--badge-rejected-bg);
+  color: var(--badge-rejected-text);
+}
+
+.ai-confidence {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-confidence-bar {
+  display: block;
+  height: 6px;
+  background: var(--color-primary);
+  border-radius: 100px;
+  max-width: 80px;
+  min-width: 4px;
+  transition: width 0.3s;
+}
+
+.ai-confidence-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.ai-missing-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-missing-list li {
+  font-size: 13px;
+  color: var(--color-warning);
+  padding: 4px 10px;
+  background: var(--color-warning-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.ai-missing-list li::before {
+  content: '⚠ ';
+  font-size: 11px;
+}
+
+.ai-rfq-draft {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  white-space: pre-wrap;
+  color: var(--color-text);
+  line-height: 1.6;
+  max-height: 200px;
+  overflow-y: auto;
+}
