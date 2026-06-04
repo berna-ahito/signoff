@@ -10,10 +10,17 @@
   border-width: 0;
 }
 
+
+.decision-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .decision-option {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  padding: 7px 14px;
+  padding: 10px 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   font-size: 13px;
@@ -22,15 +29,105 @@
   transition: all 0.15s;
   background: var(--color-surface);
   color: var(--color-text-muted);
+  gap: 10px;
+  position: relative;
+}
+
+.decision-option::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  flex-shrink: 0;
+  transition: all 0.15s;
 }
 
 .decision-option:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
+  background: var(--color-surface-2);
 }
 
-.decision-option.selected {
-  border-color: var(--color-primary);
-  background: var(--color-primary-subtle);
-  color: var(--color-primary);
+/* Approve — green */
+.decision-option.decision-approve:hover {
+  border-color: #86efac;
+  color: var(--color-success);
+  background: var(--color-success-subtle);
+}
+
+.decision-option.decision-approve:hover::before {
+  border-color: #86efac;
+}
+
+.decision-option.decision-approve.selected {
+  border-color: #86efac;
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.decision-option.decision-approve.selected::before {
+  border-color: var(--color-success);
+  background: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+/* Reject — red */
+.decision-option.decision-reject:hover {
+  border-color: #fca5a5;
+  color: var(--color-danger);
+  background: var(--color-danger-subtle);
+}
+
+.decision-option.decision-reject:hover::before {
+  border-color: #fca5a5;
+}
+
+.decision-option.decision-reject.selected {
+  border-color: #fca5a5;
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.decision-option.decision-reject.selected::before {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+/* Needs more info — amber */
+.decision-option.decision-info:hover {
+  border-color: #fde68a;
+  color: var(--color-warning);
+  background: var(--color-warning-subtle);
+}
+
+.decision-option.decision-info:hover::before {
+  border-color: #fde68a;
+}
+
+.decision-option.decision-info.selected {
+  border-color: #fde68a;
+  background: var(--color-warning-subtle);
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.decision-option.decision-info.selected::before {
+  border-color: var(--color-warning);
+  background: var(--color-warning);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+}
+
+/* Submit button variants */
+.btn-success {
+  background: var(--color-success);
+  color: #fff;
+  border: none;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #15803d;
 }

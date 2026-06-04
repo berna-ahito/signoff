@@ -43,34 +43,41 @@ export function AIReviewPanel({ requestId }: Props) {
       <div className="card-header">
         <h2 className="card-title" id="ai-panel-heading">
           <span className="ai-badge" aria-hidden="true">AI</span>
-          Automated Review
+          Automated Analysis
+          <span className="ai-advisory-chip" aria-hidden="true">advisory</span>
         </h2>
         {!review && (
           <button
-            className="btn btn-primary btn-sm"
+            className="btn btn-outline btn-sm"
             onClick={runReview}
             disabled={loading}
             aria-busy={loading}
           >
-            {loading ? <><span className="spinner" role="status" aria-label="Loading" /> Running…</> : 'Run AI Review'}
+            {loading ? <><span className="spinner" role="status" aria-label="Loading" /> Running…</> : 'Run Analysis'}
           </button>
         )}
       </div>
 
+      <div className="card-body" style={{ paddingBottom: 10 }}>
+        <p className="ai-disclaimer" role="note">
+          AI analysis is <strong>advisory only</strong>. All approval decisions are made by authorized humans and logged to the audit trail.
+        </p>
+      </div>
+
       {error && (
-        <div className="card-body">
+        <div className="card-body" style={{ paddingTop: 0 }}>
           <div className="alert alert-error" role="alert">{error}</div>
         </div>
       )}
 
       {!review && !error && !loading && (
-        <div className="card-body empty-state" style={{ padding: '24px 16px' }}>
-          <p className="text-muted text-sm">AI review not yet generated. Click "Run AI Review" to analyze this request.</p>
+        <div className="card-body empty-state" style={{ padding: '16px', paddingTop: 0 }}>
+          <p className="text-muted text-sm">Click "Run Analysis" to generate an AI assessment of this request.</p>
         </div>
       )}
 
       {review && (
-        <div className="card-body stack" style={{ gap: 14 }}>
+        <div className="card-body stack" style={{ gap: 14, paddingTop: 0 }}>
           <div className="ai-summary">{review.summary}</div>
 
           <div className="ai-metrics">
@@ -85,27 +92,29 @@ export function AIReviewPanel({ requestId }: Props) {
             <div className="ai-metric">
               <span className="meta-label">Confidence</span>
               <span className="ai-confidence">
-                <span
-                  className="ai-confidence-bar"
-                  style={{ width: `${review.confidence * 100}%` }}
-                  role="meter"
-                  aria-valuenow={Math.round(review.confidence * 100)}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-label={`Confidence: ${Math.round(review.confidence * 100)}%`}
-                />
+                <span className="ai-confidence-bar-track">
+                  <span
+                    className="ai-confidence-bar"
+                    style={{ width: `${review.confidence * 100}%` }}
+                    role="meter"
+                    aria-valuenow={Math.round(review.confidence * 100)}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label={`Confidence: ${Math.round(review.confidence * 100)}%`}
+                  />
+                </span>
                 <span className="ai-confidence-label">{Math.round(review.confidence * 100)}%</span>
               </span>
             </div>
             <div className="ai-metric">
-              <span className="meta-label">Recommendation</span>
+              <span className="meta-label">Suggestion</span>
               <span className="meta-value">{actionLabels[review.recommended_action]}</span>
             </div>
           </div>
 
           {review.missing_info.length > 0 && (
             <div>
-              <p className="meta-label" style={{ marginBottom: 6 }}>Missing Information</p>
+              <p className="ai-rfq-section-label" style={{ marginBottom: 6 }}>Missing Information</p>
               <ul className="ai-missing-list" aria-label="Missing information items">
                 {review.missing_info.map((item, i) => (
                   <li key={i}>{item}</li>
@@ -115,7 +124,7 @@ export function AIReviewPanel({ requestId }: Props) {
           )}
 
           <div>
-            <p className="meta-label" style={{ marginBottom: 6 }}>RFQ Draft</p>
+            <p className="ai-rfq-section-label">RFQ Draft</p>
             <pre className="ai-rfq-draft">{review.rfq_draft}</pre>
           </div>
         </div>

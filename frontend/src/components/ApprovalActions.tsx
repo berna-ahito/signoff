@@ -8,6 +8,12 @@ interface Props {
   onDecision: () => void
 }
 
+const decisionConfig: Record<Decision, { label: string; typeClass: string; btnClass: string }> = {
+  approved: { label: 'Approve', typeClass: 'decision-approve', btnClass: 'btn-success' },
+  rejected: { label: 'Reject', typeClass: 'decision-reject', btnClass: 'btn-danger' },
+  needs_more_info: { label: 'Need More Info', typeClass: 'decision-info', btnClass: 'btn-outline' },
+}
+
 export function ApprovalActions({ request, role, onDecision }: Props) {
   const [decision, setDecision] = useState<Decision | null>(null)
   const [note, setNote] = useState('')
@@ -35,19 +41,26 @@ export function ApprovalActions({ request, role, onDecision }: Props) {
     }
   }
 
+  const activeConfig = decision ? decisionConfig[decision] : null
+
   return (
-    <section className="card" aria-labelledby="approval-actions-heading">
+    <>
+    <div className="section-label">Decision Required</div>
+    <section className="card card-prominent" aria-labelledby="approval-actions-heading">
       <div className="card-header">
-        <h2 className="card-title" id="approval-actions-heading">Approval Decision</h2>
+        <h2 className="card-title" id="approval-actions-heading">Your Decision</h2>
       </div>
       <div className="card-body stack">
         {error && <div className="alert alert-error" role="alert">{error}</div>}
 
         <fieldset style={{ border: 'none' }}>
-          <legend className="form-label" style={{ marginBottom: 8 }}>Decision</legend>
-          <div className="row" role="group" aria-label="Decision options">
-            {(['approved', 'rejected', 'needs_more_info'] as Decision[]).map((d) => (
-              <label key={d} className={`decision-option ${decision === d ? 'selected' : ''}`}>
+          <legend className="form-label" style={{ marginBottom: 8 }}>Select decision</legend>
+          <div className="decision-options" role="group" aria-label="Decision options">
+            {(Object.entries(decisionConfig) as [Decision, typeof decisionConfig[Decision]][]).map(([d, cfg]) => (
+              <label
+                key={d}
+                className={`decision-option ${cfg.typeClass} ${decision === d ? 'selected' : ''}`}
+              >
                 <input
                   type="radio"
                   name="decision"
@@ -56,7 +69,7 @@ export function ApprovalActions({ request, role, onDecision }: Props) {
                   onChange={() => setDecision(d)}
                   className="sr-only"
                 />
-                {d === 'approved' ? 'Approve' : d === 'rejected' ? 'Reject' : 'Need More Info'}
+                {cfg.label}
               </label>
             ))}
           </div>
@@ -78,7 +91,7 @@ export function ApprovalActions({ request, role, onDecision }: Props) {
 
         <div className="row">
           <button
-            className={`btn ${decision === 'approved' ? 'btn-primary' : decision === 'rejected' ? 'btn-danger' : 'btn-outline'}`}
+            className={`btn ${activeConfig?.btnClass ?? 'btn-outline'}`}
             onClick={submit}
             disabled={!decision || loading}
             aria-busy={loading}
@@ -86,7 +99,12 @@ export function ApprovalActions({ request, role, onDecision }: Props) {
             {loading ? <><span className="spinner" aria-hidden="true" /> Submitting…</> : 'Submit Decision'}
           </button>
         </div>
+
+        <p className="human-control-note">
+          Your decision is final and will be recorded in the audit trail. AI analysis above is advisory only.
+        </p>
       </div>
     </section>
+    </>
   )
 }

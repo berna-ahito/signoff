@@ -103,6 +103,18 @@ export function DetailPage({ role }: Props) {
           </div>
         </div>
 
+        {/* Dossier reference header */}
+        <div className="dossier-header">
+          <div className="dossier-meta">
+            <span className="dossier-ref">PR-{String(request.id).padStart(4, '0')}</span>
+            <StatusBadge status={request.status} />
+          </div>
+          <div className="dossier-dates">
+            <span className="dossier-date-label">Filed</span>
+            <span className="dossier-date">{formatDate(request.created_at)}</span>
+          </div>
+        </div>
+
         {/* Title card */}
         <div className="card" style={{ marginBottom: 16 }}>
           <div className="card-body">

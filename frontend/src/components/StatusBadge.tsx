@@ -6,9 +6,9 @@ interface Props {
 
 const labelMap: Record<RequestStatus, string> = {
   draft: 'Draft',
-  pending_review: 'AI Review',
+  pending_review: 'In Review',
   pending_approval: 'Pending Approval',
-  needs_rule: 'No Rule',
+  needs_rule: 'Needs Routing',
   approved: 'Approved',
   rejected: 'Rejected',
   needs_more_info: 'Needs Info',
