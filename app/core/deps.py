@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.security import decode_access_token
 from app.db.base import get_db
-from app.db.models import User
+from app.db.models import PurchaseRequest, User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -44,3 +44,18 @@ def require_role(*allowed_roles: str):
             )
         return current_user
     return _require_role
+
+
+def _get_request_or_403(db: Session, request_id: int, current_user: User) -> PurchaseRequest:
+    req = db.get(PurchaseRequest, request_id)
+    if req is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Request not found")
+    if current_user.role == "admin":
+        return req
+    if current_user.role == "requester" and req.requester_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if current_user.role == "manager" and req.assigned_role != "manager" and req.requester_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if current_user.role == "finance" and req.assigned_role != "finance" and req.requester_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    return req

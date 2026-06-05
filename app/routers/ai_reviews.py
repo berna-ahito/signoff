@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.core.deps import get_current_active_user
+from app.core.deps import _get_request_or_403, get_current_active_user
 from app.db.base import get_db
 from app.db.models import User
-from app.routers.requests import _get_request_or_403
 from app.schemas.ai_review import AIReviewResult
 from app.services.ai_review_service import generate_ai_review
 
