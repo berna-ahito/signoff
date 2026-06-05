@@ -3,6 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from app.db.models import ApprovalRule, PurchaseRequest
+from app.services.slack_service import notify_slack
 
 ALLOWED_TRANSITIONS = {
     "draft": ["pending_review"],
@@ -67,4 +68,13 @@ def apply_decision(db: Session, request: PurchaseRequest, decision: str, note: O
     request.status = new_status
     db.commit()
     db.refresh(request)
+
+    if decision in ("approved", "rejected"):
+        notify_slack(
+            event=decision.upper(),
+            request_id=request.id,
+            title=request.title,
+            detail=f"note={note or 'none'}",
+        )
+
     return request

@@ -5,6 +5,7 @@ from app.db.models import AIReview, PurchaseRequest
 from app.schemas.ai_review import AIReviewResult
 from app.services.ai_review_base import AIReviewProvider
 from app.services.mock_ai_provider import MockAIProvider
+from app.services.slack_service import notify_slack
 
 
 def _load_provider() -> AIReviewProvider:
@@ -56,5 +57,13 @@ def generate_ai_review(request: PurchaseRequest, db: Session) -> AIReviewResult:
     )
     db.add(row)
     db.commit()
+
+    if result.risk_level == "high":
+        notify_slack(
+            event="HIGH RISK",
+            request_id=request.id,
+            title=request.title,
+            detail=f"risk={result.risk_level}, action={result.recommended_action}",
+        )
 
     return result
