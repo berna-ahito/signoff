@@ -1,7 +1,8 @@
 import pytest
+from unittest.mock import patch
 
 from app.core.security import get_password_hash
-from app.db.models import ApprovalRule, PurchaseRequest, User
+from app.db.models import AIReview, ApprovalRule, PurchaseRequest, User
 from app.services.mock_ai_provider import MockAIProvider
 
 VALID_ACTIONS = {"request_more_info", "manager_review", "finance_review", "ready_for_rfq"}
@@ -163,6 +164,39 @@ def test_ai_review_does_not_mutate_status(client, seed_users, auth_headers):
 
     get_resp = client.get(f"/requests/{req_id}", headers=auth_headers["alice"])
     assert get_resp.json()["status"] == status_before
+
+
+# --- Caching ---
+
+def test_ai_review_cached_on_second_call(client, seed_users, auth_headers, db_session):
+    resp = _create_request(client, auth_headers["alice"])
+    req_id = resp.json()["id"]
+
+    r1 = client.post(f"/requests/{req_id}/ai-review", headers=auth_headers["alice"])
+    r2 = client.post(f"/requests/{req_id}/ai-review", headers=auth_headers["alice"])
+
+    assert r1.status_code == 200
+    assert r2.status_code == 200
+    assert r1.json() == r2.json()
+
+    rows = db_session.query(AIReview).filter_by(request_id=req_id).all()
+    assert len(rows) == 1
+
+
+def test_get_request_embeds_ai_review_after_review(client, seed_users, auth_headers):
+    resp = _create_request(client, auth_headers["alice"])
+    req_id = resp.json()["id"]
+
+    get_before = client.get(f"/requests/{req_id}", headers=auth_headers["alice"])
+    assert get_before.status_code == 200
+    assert get_before.json()["ai_review"] is None
+
+    client.post(f"/requests/{req_id}/ai-review", headers=auth_headers["alice"])
+
+    get_after = client.get(f"/requests/{req_id}", headers=auth_headers["alice"])
+    assert get_after.status_code == 200
+    assert get_after.json()["ai_review"] is not None
+    _assert_valid_review(get_after.json()["ai_review"])
 
 
 # --- MockProvider unit tests ---

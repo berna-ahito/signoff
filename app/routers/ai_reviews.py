@@ -17,4 +17,4 @@ def generate_review(
     current_user: User = Depends(get_current_active_user),
 ) -> AIReviewResult:
     req = _get_request_or_403(db, request_id, current_user)
-    return generate_ai_review(req)
+    return generate_ai_review(req, db)

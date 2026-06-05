@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
@@ -54,6 +55,8 @@ class PurchaseRequest(Base):
     created_at = Column(DateTime, default=_now)
     updated_at = Column(DateTime, default=_now, onupdate=_now)
 
+    ai_review = relationship("AIReview", back_populates="request", uselist=False)
+
 
 class ApprovalRule(Base):
     __tablename__ = "approval_rules"
@@ -88,3 +91,23 @@ class AuditLog(Base):
     new_status = Column(String(50), nullable=True)
     note = Column(Text, nullable=True)
     created_at = Column(DateTime, default=_now)
+
+
+class AIReview(Base):
+    __tablename__ = "ai_reviews"
+    __table_args__ = (UniqueConstraint("request_id", "provider_name"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    request_id = Column(Integer, ForeignKey("purchase_requests.id"), nullable=False)
+    provider_name = Column(String(50), nullable=False)
+    summary = Column(Text, nullable=False)
+    category = Column(String(100), nullable=False)
+    urgency = Column(String(50), nullable=False)
+    risk_level = Column(String(50), nullable=False)
+    missing_info = Column(JSON, nullable=False)
+    recommended_action = Column(String(100), nullable=False)
+    rfq_draft = Column(Text, nullable=False)
+    confidence = Column(Float, nullable=False)
+    created_at = Column(DateTime, default=_now)
+
+    request = relationship("PurchaseRequest", back_populates="ai_review")

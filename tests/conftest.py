@@ -3,6 +3,14 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+import app.services.ai_review_service as _ai_svc
+from app.services.mock_ai_provider import MockAIProvider
+
+
+@pytest.fixture(autouse=True)
+def force_mock_provider(monkeypatch):
+    monkeypatch.setattr(_ai_svc, "_provider", MockAIProvider())
+
 from app.core.security import get_password_hash
 from app.db.base import Base, get_db
 from app.db.models import Department, User, Vendor

@@ -3,6 +3,8 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.ai_review import AIReviewResult
+
 VALID_URGENCY = Literal["low", "medium", "high", "critical"]
 VALID_STATUS = Literal["draft", "pending_review", "pending_approval", "needs_rule", "approved", "rejected", "needs_more_info"]
 
@@ -44,6 +46,7 @@ class PurchaseRequestResponse(BaseModel):
     assigned_role: Optional[str]
     created_at: datetime
     updated_at: datetime
+    ai_review: Optional[AIReviewResult] = None
     model_config = ConfigDict(from_attributes=True)
 
 
