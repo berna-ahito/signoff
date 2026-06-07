@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import _get_request_or_403, get_current_active_user, require_role
+from app.core.limiter import limiter
 from app.db.base import get_db
 from app.db.models import PurchaseRequest, User
 from app.schemas.purchase_request import (
@@ -18,7 +19,9 @@ router = APIRouter(prefix="/requests", tags=["requests"])
 
 
 @router.post("/", response_model=PurchaseRequestResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("20/minute")
 def create_request(
+    request: Request,
     body: PurchaseRequestCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("requester")),
@@ -91,7 +94,9 @@ def update_request(
 
 
 @router.post("/{request_id}/submit", response_model=PurchaseRequestResponse)
+@limiter.limit("20/minute")
 def submit_request(
+    request: Request,
     request_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("requester")),

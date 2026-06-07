@@ -2,12 +2,12 @@ fastapi  # web framework
 uvicorn[standard]  # ASGI server
 sqlalchemy  # ORM (sync-first, async-optional later)
 alembic  # DB migrations
-python-jose[cryptography]  # JWT encode/decode
-passlib[bcrypt]  # password hashing
+PyJWT>=2.8.0  # JWT encode/decode
 pydantic[email]  # validation + EmailStr type
 pydantic-settings  # Settings from env vars
 python-dotenv  # load .env into os.environ
 httpx  # test client for FastAPI TestClient + Slack webhook
 groq  # Groq AI provider (free tier)
+slowapi  # per-IP rate limiting
 pytest  # test runner
 pytest-cov  # coverage reporting

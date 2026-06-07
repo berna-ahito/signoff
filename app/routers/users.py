@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_active_user, require_role
+from app.core.limiter import limiter
 from app.core.security import get_password_hash
 from app.db.base import get_db
 from app.db.models import User
@@ -15,8 +16,19 @@ def get_me(current_user: User = Depends(get_current_active_user)):
     return UserResponse.model_validate(current_user)
 
 
+@router.get("/", response_model=list[UserResponse])
+def list_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin")),
+):
+    users = db.query(User).order_by(User.id.asc()).all()
+    return [UserResponse.model_validate(u) for u in users]
+
+
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("10/minute")
 def create_user(
+    request: Request,
     body: UserCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),
@@ -38,7 +50,9 @@ def create_user(
 
 
 @router.patch("/{user_id}", response_model=UserResponse)
+@limiter.limit("20/minute")
 def update_user(
+    request: Request,
     user_id: int,
     body: UserAdminUpdate,
     db: Session = Depends(get_db),

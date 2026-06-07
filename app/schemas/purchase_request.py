@@ -10,14 +10,14 @@ VALID_STATUS = Literal["draft", "pending_review", "pending_approval", "needs_rul
 
 
 class PurchaseRequestCreate(BaseModel):
-    title: str = Field(min_length=3, max_length=500)
-    description: str = Field(min_length=10)
+    title: str = Field(min_length=3, max_length=200)
+    description: str = Field(min_length=10, max_length=2000)
     category: str = Field(min_length=2, max_length=100)
     urgency: VALID_URGENCY
     quantity: int = Field(gt=0)
     estimated_cost: float = Field(gt=0.0)
     vendor_id: Optional[int] = None
-    justification: str = Field(min_length=10)
+    justification: str = Field(min_length=10, max_length=1000)
 
 
 class PurchaseRequestUpdate(BaseModel):

@@ -19,3 +19,9 @@ htmlcov/
 *.egg-info/
 .claude/settings.local.json
 .codex/local*
+AGENTS.md
+
+.pytest_cache/
+.coverage
+test.db
+procureflow.db

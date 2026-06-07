@@ -69,3 +69,32 @@ export interface ApprovalDecision {
   decision: Decision
   note?: string
 }
+
+export interface User {
+  id: number
+  email: string
+  full_name: string
+  role: Role
+  department_id: number | null
+  is_active: boolean
+  created_at: string
+}
+
+export interface UserCreate {
+  email: string
+  password: string
+  full_name: string
+  role: Role
+  department_id?: number
+}
+
+export interface AuditLog {
+  id: number
+  request_id: number
+  actor_id: number | null
+  action: string
+  old_status: string | null
+  new_status: string | null
+  note: string | null
+  created_at: string
+}

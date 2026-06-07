@@ -1,14 +1,18 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { useAuth } from './hooks/useAuth'
+import { AuditPage } from './pages/AuditPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { DetailPage } from './pages/DetailPage'
 import { LoginPage } from './pages/LoginPage'
 import { SubmitPage } from './pages/SubmitPage'
+import { UserManagementPage } from './pages/UserManagementPage'
 
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/submit': 'New Request',
+  '/audit': 'Audit Log',
+  '/users': 'User Management',
 }
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -17,6 +21,13 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
+  return <>{children}</>
+}
+
+function RequireAdmin({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, role } = useAuth()
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (role !== 'admin') return <Navigate to="/dashboard" replace />
   return <>{children}</>
 }
 
@@ -63,6 +74,22 @@ export default function App() {
             <RequireAuth>
               <DetailPage role={role} />
             </RequireAuth>
+          }
+        />
+        <Route
+          path="/audit"
+          element={
+            <RequireAdmin>
+              <AuditPage />
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <RequireAdmin>
+              <UserManagementPage />
+            </RequireAdmin>
           }
         />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

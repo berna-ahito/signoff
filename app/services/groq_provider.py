@@ -38,14 +38,18 @@ Respond with JSON only. No explanation text."""
 
 class GroqProvider(AIReviewProvider):
     def review(self, request: PurchaseRequest) -> AIReviewResult:
+        # Prevent prompt injection via user-controlled fields
+        safe_title = request.title.replace("\n", " ").replace("\r", " ")[:200]
+        safe_description = request.description.replace("\n", " ").replace("\r", " ")[:500]
+        safe_justification = request.justification.replace("\n", " ").replace("\r", " ")[:300]
         prompt = _PROMPT_TEMPLATE.format(
-            title=request.title,
-            description=request.description,
+            title=safe_title,
+            description=safe_description,
             category=request.category,
             urgency=request.urgency,
             estimated_cost=request.estimated_cost,
             quantity=request.quantity,
-            justification=request.justification,
+            justification=safe_justification,
         )
         try:
             client = groq.Groq(api_key=settings.groq_api_key)

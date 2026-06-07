@@ -1,3 +1,7 @@
+import os
+if os.getenv("APP_ENV") == "production":
+    raise RuntimeError("Seed script must not run in production")
+
 from app.db.base import Base, SessionLocal, engine
 from app.db.models import ApprovalRule, Department, User, Vendor
 from app.core.security import get_password_hash

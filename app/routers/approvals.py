@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import require_role
+from app.core.limiter import limiter
 from app.db.base import get_db
 from app.db.models import ApprovalDecision, ApprovalRule, PurchaseRequest, User
 from app.schemas.approval import (
@@ -17,8 +18,10 @@ router = APIRouter(prefix="/approvals", tags=["approvals"])
 
 
 @router.post("/{request_id}/decide", response_model=ApprovalDecisionResponse)
+@limiter.limit("20/minute")
 def decide(
     request_id: int,
+    request: Request,
     body: ApprovalDecisionCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("manager", "finance", "admin")),
@@ -58,7 +61,9 @@ def list_rules(
 
 
 @router.post("/rules", response_model=ApprovalRuleResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("10/minute")
 def create_rule(
+    request: Request,
     body: ApprovalRuleCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),

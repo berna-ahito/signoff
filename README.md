@@ -1,111 +1,122 @@
 # ProcureFlow AI
 
-AI-assisted procurement intake, approval routing, RFQ drafting, and audit system.
-
-Turns messy employee purchase requests into structured, validated, auditable procurement data. AI classifies and summarizes — humans always approve or reject spending.
+An AI-assisted procurement intake, approval-routing, and audit system built as a portfolio-grade full-stack application.
 
 ---
 
-## Problem
+## What It Does
 
-Most small-to-mid orgs handle purchase requests over email or Slack. That means no audit trail, no consistent approval routing, no visibility into spend categories, and no way to draft RFQs at scale. ProcureFlow AI fixes this with a rules-driven backend and a pluggable AI review layer.
-
----
-
-## Phase 1 Status — Complete
-
-Backend foundation is done and tested.
-
-| Area | Status |
-|------|--------|
-| DB schema (SQLite + Alembic migrations) | Done |
-| JWT authentication | Done |
-| User management | Done |
-| Purchase request CRUD + submission | Done |
-| Approval rules engine | Done |
-| Approval routing (requester → manager/finance) | Done |
-| Audit logging on every status change | Done |
-| IDOR/BOLA protection | Done |
-| Test suite (53 tests passing) | Done |
+- **Purchase request intake** — Structured form with validation for title, category, urgency, cost, and justification
+- **AI review** — Classifies risk level, detects missing information, and drafts RFQ text (advisory only)
+- **Approval routing** — Configurable rules engine assigns requests to the correct role (manager, finance) based on category and amount
+- **Full audit trail** — Every status change is logged with actor, timestamp, and note; append-only
 
 ---
 
-## Tech Stack
+## Why It Matters
+
+ProcureFlow AI is built on a human-in-the-loop principle: the AI may classify, summarize, assess risk, and draft RFQ text, but it cannot approve or reject spending — that decision always belongs to an authorized human. The AI provider layer is abstracted behind an interface (`AIReviewProvider` ABC), so switching from the `MockProvider` to Groq or another provider requires only a config change. Security is treated as a first-class concern: IDOR protection, rate limiting, no mass assignment, and a JWT scheme with role-encoded tokens.
+
+---
+
+## Stack
 
 | Layer | Choice |
 |-------|--------|
-| Backend | FastAPI |
-| ORM | SQLAlchemy (sync, SQLite-first) |
-| Migrations | Alembic |
-| Auth | python-jose + passlib (bcrypt) |
-| Validation | Pydantic v2 |
-| Tests | pytest + httpx |
+| Backend | FastAPI + SQLAlchemy (SQLite) + Alembic |
+| Frontend | React 18 + Vite + TypeScript + React Router v6 |
+| Database | SQLite (local-first; swap to PostgreSQL via connection string) |
+| AI | Provider-agnostic ABC — MockProvider default, GroqProvider available |
+| Backend tests | pytest + httpx |
+| Frontend tests | Vitest + React Testing Library |
 
 ---
 
-## Setup
+## Demo Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Requester | alice@test.com | alice123 |
+| Manager | bob@test.com | bob123 |
+| Finance | carol@test.com | carol123 |
+| Admin | admin@test.com | admin123 |
+
+---
+
+## Quick Start
+
+### Backend
 
 ```bash
-# Create and activate virtualenv
+# 1. Create and activate a virtual environment
 py -m venv .venv
-.venv\Scripts\activate      # Windows
-# source .venv/bin/activate # macOS/Linux
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate   # macOS/Linux
 
-# Install dependencies
+# 2. Install dependencies
 py -m pip install -r requirements.txt
 
-# Configure environment
-copy .env.example .env      # Windows
-# cp .env.example .env      # macOS/Linux
-# Edit .env — set SECRET_KEY
+# 3. Create .env from template and set SECRET_KEY
+copy .env.example .env        # Windows
+# cp .env.example .env        # macOS/Linux
 
-# Run migrations
+# 4. Run database migrations
 py -m alembic upgrade head
 
-# Seed demo users (optional)
+# 5. Seed demo users
 py scripts/seed.py
 
-# Start server
+# 6. Start the API server (port 8000)
 py -m uvicorn app.main:app --reload
 ```
+
+### Frontend
+
+```bash
+# From the project root
+cd frontend
+npm install
+npm run dev
+# Opens at http://localhost:5173
+```
+
+Open **http://localhost:5173** and sign in with any demo credential above.
 
 ---
 
 ## Running Tests
 
+**Backend:**
 ```bash
 py -m pytest
 py -m pytest --cov=app --cov-report=term-missing
 ```
 
----
-
-## Demo Users
-
-After running `py scripts/seed.py`:
-
-| Email | Password | Role |
-|-------|----------|------|
-| admin@example.com | admin123 | admin |
-| manager@example.com | manager123 | manager |
-| finance@example.com | finance123 | finance |
-| user@example.com | user123 | requester |
+**Frontend:**
+```bash
+cd frontend
+npm test
+```
 
 ---
 
-## Roadmap
+## Architecture
 
-| Phase | Name | Status |
-|-------|------|--------|
-| 1 | Backend Foundation | **Done** |
-| 2 | AI Review Layer | Next — MockProvider → Gemini/Groq/Ollama |
-| 3 | Frontend MVP | React + Vite, 3 core screens |
-| 4 | Security Hardening + Portfolio Packaging | Rate limiting, OWASP audit, case study |
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full request lifecycle diagram and key architectural decisions.
 
 ---
 
-## AI Boundary
+## Security Highlights
 
-AI may: classify requests, detect missing info, assess risk, summarize, draft RFQ text.
+- **IDOR/BOLA protection** — `_get_request_or_403` helper enforces ownership on every request-scoped endpoint; admin role bypasses for oversight
+- **Rate limiting** — SlowAPI: 5 requests/min on `POST /auth/login` (brute-force), 20 requests/min on `POST /requests/` (spam)
+- **JWT authentication** — 15-minute access tokens with `role` + `user_id` encoded in payload
+- **No mass assignment** — Separate `Create`, `Update`, and `AdminUpdate` schemas prevent field injection
+- **Audit log** — Every status transition creates an append-only `AuditLog` row with actor, action, and note
+- **Secrets** — `.env.example` only; `.env` is gitignored and never committed
 
-AI must never: approve or reject spending. That is always a human action.
+---
+
+## Project Status
+
+Locally runnable portfolio project. Deployment (Phase 6) deferred.

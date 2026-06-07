@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     ai_provider: str = "mock"
     groq_api_key: str = ""
     slack_webhook_url: str = ""
+    app_env: str = "development"
 
     model_config = SettingsConfigDict(env_file=".env")
 

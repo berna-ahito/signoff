@@ -76,6 +76,34 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
               New Request
             </NavLink>
           )}
+
+          {role === 'admin' && (
+            <>
+              <div className="nav-section-label" style={{ marginTop: 16, marginBottom: 4, fontSize: 11, color: 'var(--color-text-subtle)', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '0 12px' }}>Admin</div>
+              <NavLink
+                to="/audit"
+                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+                aria-current={location.pathname === '/audit' ? 'page' : undefined}
+                onClick={closeNav}
+              >
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                  <path d="M7.5 1a6.5 6.5 0 100 13A6.5 6.5 0 007.5 1zm0 1a5.5 5.5 0 110 11A5.5 5.5 0 017.5 2zM7 5v4.5l3 1.5.5-.87-2.5-1.25V5H7z" fill="currentColor"/>
+                </svg>
+                Audit Log
+              </NavLink>
+              <NavLink
+                to="/users"
+                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+                aria-current={location.pathname === '/users' ? 'page' : undefined}
+                onClick={closeNav}
+              >
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                  <path d="M5 2a2 2 0 100 4 2 2 0 000-4zm0 5c-2.67 0-4 1.34-4 2v1h8v-1c0-.66-1.33-2-4-2zm5-5a2 2 0 100 4 2 2 0 000-4zm0 5c-.34 0-.67.03-1 .09.42.5.67 1.14.67 1.91H14v-1c0-.66-1.33-2-4-2z" fill="currentColor"/>
+                </svg>
+                Users
+              </NavLink>
+            </>
+          )}
         </div>
 
         <div className="sidebar-footer">
