@@ -25,3 +25,6 @@ AGENTS.md
 .coverage
 test.db
 procureflow.db
+# Local AI tooling / generated indexes
+.codegraph/
+*.karpathy-*.bak
