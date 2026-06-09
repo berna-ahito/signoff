@@ -56,3 +56,43 @@ Use relevant installed skills automatically:
 - documentation-lookup
 
 Do not use Obsidian, claude-mem, GraphRAG, ADK, browser automation, or agent platforms unless explicitly requested later.
+
+<!-- KARPATHY_AGENT_PRINCIPLES_START -->
+
+## Karpathy-Inspired Agent Principles
+
+Use these principles for non-trivial coding, refactoring, debugging, architecture, agent-workflow, and product-building tasks. For obvious one-line fixes, use judgment and stay lightweight.
+
+### 1. Think Before Coding
+
+- State assumptions before implementation.
+- Do not silently choose between multiple interpretations when the choice changes architecture, data model, security, file scope, or user-visible behavior.
+- Surface tradeoffs when there are multiple reasonable paths.
+- Push back when a simpler approach is clearly better.
+- Stop and ask when confusion could cause wrong code.
+
+### 2. Simplicity First
+
+- Prefer the minimum code that solves the stated problem.
+- Do not add speculative features, generic abstractions, or unnecessary configurability.
+- Do not create new layers for single-use logic.
+- Do not add error handling for impossible scenarios.
+- If the solution is bloated, simplify before finalizing.
+
+### 3. Surgical Changes
+
+- Touch only files required by the task.
+- Do not rewrite adjacent code, comments, formatting, or architecture unless asked.
+- Match the existing project style.
+- Mention unrelated dead code or unrelated issues, but do not remove them unless requested.
+- Every changed line should trace back to the user request.
+
+### 4. Goal-Driven Execution
+
+- Convert vague implementation requests into verifiable success criteria.
+- Prefer tests, builds, lint checks, or explicit manual verification before declaring work done.
+- For multi-step work, use: step → verification.
+- Keep looping until the stated verification passes or a real blocker is found.
+- Report what was verified, what failed, and what was not run.
+
+<!-- KARPATHY_AGENT_PRINCIPLES_END -->
