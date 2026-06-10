@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import _get_request_or_403, get_current_active_user, require_role
 from app.core.limiter import limiter
 from app.db.base import get_db
 from app.db.models import PurchaseRequest, User
+from app.schemas.pagination import PaginatedResponse
 from app.schemas.purchase_request import (
     PurchaseRequestCreate,
     PurchaseRequestResponse,
@@ -44,8 +45,12 @@ def create_request(
     return PurchaseRequestResponse.model_validate(req)
 
 
-@router.get("/", response_model=list[PurchaseRequestSummary])
+@router.get("/", response_model=PaginatedResponse[PurchaseRequestSummary])
+@limiter.limit("30/minute")
 def list_requests(
+    request: Request,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
@@ -62,7 +67,9 @@ def list_requests(
             (PurchaseRequest.assigned_role == "finance") |
             (PurchaseRequest.requester_id == current_user.id)
         )
-    return [PurchaseRequestSummary.model_validate(r) for r in q.all()]
+    total = q.count()
+    items = [PurchaseRequestSummary.model_validate(r) for r in q.offset(skip).limit(limit).all()]
+    return PaginatedResponse(items=items, total=total, skip=skip, limit=limit)
 
 
 @router.get("/{request_id}", response_model=PurchaseRequestResponse)

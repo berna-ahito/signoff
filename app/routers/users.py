@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_active_user, require_role
@@ -6,6 +6,7 @@ from app.core.limiter import limiter
 from app.core.security import get_password_hash
 from app.db.base import get_db
 from app.db.models import User
+from app.schemas.pagination import PaginatedResponse
 from app.schemas.user import UserAdminUpdate, UserCreate, UserResponse
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -16,13 +17,19 @@ def get_me(current_user: User = Depends(get_current_active_user)):
     return UserResponse.model_validate(current_user)
 
 
-@router.get("/", response_model=list[UserResponse])
+@router.get("/", response_model=PaginatedResponse[UserResponse])
+@limiter.limit("30/minute")
 def list_users(
+    request: Request,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role("admin")),
 ):
-    users = db.query(User).order_by(User.id.asc()).all()
-    return [UserResponse.model_validate(u) for u in users]
+    q = db.query(User).order_by(User.id.asc())
+    total = q.count()
+    items = [UserResponse.model_validate(u) for u in q.offset(skip).limit(limit).all()]
+    return PaginatedResponse(items=items, total=total, skip=skip, limit=limit)
 
 
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
