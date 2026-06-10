@@ -113,6 +113,7 @@ def test_expired_refresh_token_returns_401(client, seed_users, db_session):
     db_token = RefreshToken(
         user_id=alice.id,
         token_hash=token_hash,
+        token_prefix=raw_token[:16],
         expires_at=past,
         revoked=False,
     )
