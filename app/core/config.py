@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./procureflow.db"
     ai_provider: str = "mock"
     groq_api_key: str = ""
-    slack_webhook_url: str = ""
+    resend_api_key: str = ""
     app_env: str = "development"
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 

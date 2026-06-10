@@ -13,6 +13,7 @@ from app.schemas.approval import (
 )
 from app.services.approval_engine import apply_decision
 from app.services.audit_service import ACTION_DECISION, log_action
+from app.services.notification_service import notify_decision_made
 
 router = APIRouter(prefix="/approvals", tags=["approvals"])
 
@@ -48,6 +49,9 @@ def decide(
     db.commit()
     db.refresh(decision_record)
     log_action(db, req.id, current_user.id, ACTION_DECISION, old_status, req.status, body.note)
+    requester = db.get(User, req.requester_id)
+    if requester is not None:
+        notify_decision_made(req.title, body.decision, requester.email)
     return ApprovalDecisionResponse.model_validate(decision_record)
 
 

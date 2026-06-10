@@ -14,6 +14,7 @@ from app.schemas.purchase_request import (
 )
 from app.services.approval_engine import route_request
 from app.services.audit_service import ACTION_ROUTED, ACTION_SUBMITTED, log_action
+from app.services.notification_service import notify_request_submitted
 
 router = APIRouter(prefix="/requests", tags=["requests"])
 
@@ -117,4 +118,9 @@ def submit_request(
     log_action(db, req.id, current_user.id, ACTION_SUBMITTED, old_status, "pending_review")
     req = route_request(db, req)
     log_action(db, req.id, None, ACTION_ROUTED, "pending_review", req.status)
+    approver_emails = [
+        u.email
+        for u in db.query(User).filter(User.role == "manager", User.is_active == True).all()
+    ]
+    notify_request_submitted(req.title, approver_emails)
     return PurchaseRequestResponse.model_validate(req)
