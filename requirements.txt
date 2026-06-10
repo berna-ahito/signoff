@@ -10,5 +10,6 @@ python-dotenv  # load .env into os.environ
 httpx  # test client for FastAPI TestClient + Resend HTTP calls
 groq  # Groq AI provider (free tier)
 slowapi  # per-IP rate limiting
+python-multipart  # multipart/form-data file uploads
 pytest  # test runner
 pytest-cov  # coverage reporting

@@ -6,7 +6,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.core.config import settings
 from app.core.limiter import limiter
-from app.routers import ai_reviews, approvals, audit, auth, requests, users
+from app.routers import ai_reviews, approvals, attachments, audit, auth, requests, users
 
 _is_production = settings.app_env == "production"
 
@@ -46,6 +46,7 @@ app.include_router(requests.router)
 app.include_router(approvals.router)
 app.include_router(audit.router)
 app.include_router(ai_reviews.router)
+app.include_router(attachments.router)
 
 
 @app.get("/health")
