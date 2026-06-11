@@ -1,13 +1,15 @@
 fastapi  # web framework
 uvicorn[standard]  # ASGI server
 sqlalchemy  # ORM (sync-first, async-optional later)
+psycopg2-binary  # PostgreSQL driver
 alembic  # DB migrations
 PyJWT>=2.8.0  # JWT encode/decode
 pydantic[email]  # validation + EmailStr type
 pydantic-settings  # Settings from env vars
 python-dotenv  # load .env into os.environ
-httpx  # test client for FastAPI TestClient + Slack webhook
+httpx  # test client for FastAPI TestClient + Resend HTTP calls
 groq  # Groq AI provider (free tier)
 slowapi  # per-IP rate limiting
+python-multipart  # multipart/form-data file uploads
 pytest  # test runner
 pytest-cov  # coverage reporting

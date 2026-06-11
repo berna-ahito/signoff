@@ -1,122 +1,133 @@
 # ProcureFlow AI
 
-An AI-assisted procurement intake, approval-routing, and audit system built as a portfolio-grade full-stack application.
+A portfolio-grade full-stack procurement workflow system. Turns messy purchase requests into structured, validated, auditable procurement data — with AI-assisted review and a human-in-the-loop approval chain.
 
----
+## Features
 
-## What It Does
-
-- **Purchase request intake** — Structured form with validation for title, category, urgency, cost, and justification
-- **AI review** — Classifies risk level, detects missing information, and drafts RFQ text (advisory only)
-- **Approval routing** — Configurable rules engine assigns requests to the correct role (manager, finance) based on category and amount
-- **Full audit trail** — Every status change is logged with actor, timestamp, and note; append-only
-
----
-
-## Why It Matters
-
-ProcureFlow AI is built on a human-in-the-loop principle: the AI may classify, summarize, assess risk, and draft RFQ text, but it cannot approve or reject spending — that decision always belongs to an authorized human. The AI provider layer is abstracted behind an interface (`AIReviewProvider` ABC), so switching from the `MockProvider` to Groq or another provider requires only a config change. Security is treated as a first-class concern: IDOR protection, rate limiting, no mass assignment, and a JWT scheme with role-encoded tokens.
-
----
+- **Intake** — structured purchase request form with drag-and-drop file attachments (5 MB / 5 file limits)
+- **AI review** — provider-agnostic classification, risk scoring, and missing-field detection (MockProvider by default; swap for Gemini/Groq/Ollama)
+- **Approval chain** — role-based routing (requester → manager → finance), full status-transition enforcement, audit log on every change
+- **RFQ drafting** — AI-generated request-for-quote text with one click
+- **Admin panel** — user management, spend analytics by category, CSV-exportable summaries
+- **Auth** — JWT access tokens + refresh tokens, RBAC, IDOR protection on every resource
 
 ## Stack
 
-| Layer | Choice |
-|-------|--------|
-| Backend | FastAPI + SQLAlchemy (SQLite) + Alembic |
-| Frontend | React 18 + Vite + TypeScript + React Router v6 |
-| Database | SQLite (local-first; swap to PostgreSQL via connection string) |
-| AI | Provider-agnostic ABC — MockProvider default, GroqProvider available |
-| Backend tests | pytest + httpx |
-| Frontend tests | Vitest + React Testing Library |
+| Layer | Technology |
+|---|---|
+| Backend | FastAPI + SQLAlchemy + SQLite (dev) |
+| Frontend | React 18 + Vite + TypeScript |
+| UI | shadcn/ui + Tailwind CSS + motion |
+| Charts | Recharts |
+| Auth | JWT (python-jose) + bcrypt |
+| Tests | pytest + Vitest + React Testing Library |
+| Deployment | Render (API) + Vercel (frontend) |
 
----
+## Getting started
 
-## Demo Credentials
+### Prerequisites
 
-| Role | Email | Password |
-|------|-------|----------|
-| Requester | alice@test.com | alice123 |
-| Manager | bob@test.com | bob123 |
-| Finance | carol@test.com | carol123 |
-| Admin | admin@test.com | admin123 |
-
----
-
-## Quick Start
+- Python 3.11+
+- Node.js 20+
 
 ### Backend
 
 ```bash
-# 1. Create and activate a virtual environment
-py -m venv .venv
-.venv\Scripts\activate        # Windows
-# source .venv/bin/activate   # macOS/Linux
-
-# 2. Install dependencies
 py -m pip install -r requirements.txt
-
-# 3. Create .env from template and set SECRET_KEY
-copy .env.example .env        # Windows
-# cp .env.example .env        # macOS/Linux
-
-# 4. Run database migrations
-py -m alembic upgrade head
-
-# 5. Seed demo users
-py scripts/seed.py
-
-# 6. Start the API server (port 8000)
+cp .env.example .env          # fill in SECRET_KEY
 py -m uvicorn app.main:app --reload
 ```
+
+API available at `http://localhost:8000`. Interactive docs at `/docs`.
 
 ### Frontend
 
 ```bash
-# From the project root
 cd frontend
 npm install
+cp .env.example .env.local    # set VITE_API_BASE_URL=http://localhost:8000
 npm run dev
-# Opens at http://localhost:5173
 ```
 
-Open **http://localhost:5173** and sign in with any demo credential above.
+UI available at `http://localhost:5173`.
 
----
+## Environment variables
 
-## Running Tests
+### Backend (`.env`)
 
-**Backend:**
+| Variable | Description |
+|---|---|
+| `SECRET_KEY` | JWT signing secret — generate with `openssl rand -hex 32` |
+| `DATABASE_URL` | SQLAlchemy connection string (defaults to `sqlite:///./procureflow.db`) |
+| `CORS_ORIGINS` | Comma-separated allowed origins |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Access token TTL (default `30`) |
+| `REFRESH_TOKEN_EXPIRE_DAYS` | Refresh token TTL (default `7`) |
+
+### Frontend (`.env.local`)
+
+| Variable | Description |
+|---|---|
+| `VITE_API_BASE_URL` | Backend base URL |
+
+## Running tests
+
 ```bash
-py -m pytest
+# Backend
 py -m pytest --cov=app --cov-report=term-missing
+
+# Frontend
+cd frontend && npm test -- --run
 ```
 
-**Frontend:**
-```bash
-cd frontend
-npm test
+Coverage target: ≥ 94% backend, all frontend test suites green.
+
+## Project structure
+
+```
+procureflow-ai/
+├── app/
+│   ├── core/          # auth, deps, rate limiter, security
+│   ├── db/            # SQLAlchemy models and session
+│   ├── routers/       # FastAPI routers per domain
+│   ├── schemas/       # Pydantic request/response models
+│   └── services/      # AI review, approval engine, notifications
+├── tests/             # pytest test suite
+├── frontend/
+│   ├── src/
+│   │   ├── api/       # axios client + per-domain helpers
+│   │   ├── components/# shared UI components
+│   │   ├── pages/     # route-level page components
+│   │   ├── lib/       # authStore, hooks
+│   │   └── __tests__/ # Vitest unit tests
+│   └── vercel.json
+├── render.yaml
+└── .env.example
 ```
 
----
+## Deployment
 
-## Architecture
+### API → Render
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full request lifecycle diagram and key architectural decisions.
+1. Push to GitHub.
+2. Create a **Web Service** on [render.com](https://render.com) and connect the repo.
+3. Render picks up `render.yaml` automatically.
+4. Set `SECRET_KEY` in the Render environment dashboard (mark as secret).
 
----
+### Frontend → Vercel
 
-## Security Highlights
+1. Import the repo on [vercel.com](https://vercel.com) with root directory set to `frontend/`.
+2. Set `VITE_API_BASE_URL` to your Render service URL.
+3. `frontend/vercel.json` handles the SPA fallback rewrite.
 
-- **IDOR/BOLA protection** — `_get_request_or_403` helper enforces ownership on every request-scoped endpoint; admin role bypasses for oversight
-- **Rate limiting** — SlowAPI: 5 requests/min on `POST /auth/login` (brute-force), 20 requests/min on `POST /requests/` (spam)
-- **JWT authentication** — 15-minute access tokens with `role` + `user_id` encoded in payload
-- **No mass assignment** — Separate `Create`, `Update`, and `AdminUpdate` schemas prevent field injection
-- **Audit log** — Every status transition creates an append-only `AuditLog` row with actor, action, and note
-- **Secrets** — `.env.example` only; `.env` is gitignored and never committed
+## Security notes
 
----
+- All endpoints require authentication; admin-only routes enforce `require_role("admin")`.
+- IDOR/BOLA protection: every resource fetch verifies ownership or role.
+- Refresh tokens are stored server-side and rotated on use.
+- File downloads use `Content-Disposition: attachment` with sanitised filenames.
+- Rate limiting is enabled on all mutation endpoints.
+- No secrets committed; see `.env.example`.
 
-## Project Status
+## License
 
-Locally runnable portfolio project. Deployment (Phase 6) deferred.
+MIT

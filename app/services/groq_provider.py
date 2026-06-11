@@ -29,7 +29,7 @@ Return ONLY a valid JSON object with these exact fields:
 - "urgency": one of exactly: "low", "medium", "high"
 - "risk_level": one of exactly: "low", "medium", "high"
 - "missing_info": array of strings — list missing or unclear information, or empty array []
-- "recommended_action": one of exactly: "request_more_info", "manager_review", "finance_review", "ready_for_rfq"
+- "recommended_action": one of exactly: "approve", "reject", "request_info", "escalate", "review"
 - "rfq_draft": string — a short RFQ draft paragraph
 - "confidence": float between 0.0 and 1.0
 

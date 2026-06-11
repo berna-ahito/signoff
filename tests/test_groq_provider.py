@@ -33,7 +33,7 @@ def _valid_groq_payload():
         "urgency": "high",
         "risk_level": "medium",
         "missing_info": [],
-        "recommended_action": "manager_review",
+        "recommended_action": "review",
         "rfq_draft": "Request for Quotation: Test Server, Qty 1, Budget $8000.",
         "confidence": 0.85,
     }

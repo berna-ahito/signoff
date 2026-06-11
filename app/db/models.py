@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, LargeBinary, String, Text, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -111,3 +111,25 @@ class AIReview(Base):
     created_at = Column(DateTime, default=_now)
 
     request = relationship("PurchaseRequest", back_populates="ai_review")
+
+
+class RequestAttachment(Base):
+    __tablename__ = "request_attachments"
+    id = Column(Integer, primary_key=True, index=True)
+    request_id = Column(Integer, ForeignKey("purchase_requests.id"), nullable=False)
+    filename = Column(String(255), nullable=False)
+    content_type = Column(String(100), nullable=False)
+    file_data = Column(LargeBinary, nullable=False)
+    uploaded_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=_now)
+
+
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    token_hash = Column(String(255), nullable=False, unique=True)
+    token_prefix = Column(String(16), index=True, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    revoked = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=_now)

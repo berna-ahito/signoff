@@ -3,7 +3,9 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from app.db.models import ApprovalRule, PurchaseRequest
-from app.services.slack_service import notify_slack
+import logging
+
+logger = logging.getLogger(__name__)
 
 ALLOWED_TRANSITIONS = {
     "draft": ["pending_review"],
@@ -70,11 +72,11 @@ def apply_decision(db: Session, request: PurchaseRequest, decision: str, note: O
     db.refresh(request)
 
     if decision in ("approved", "rejected"):
-        notify_slack(
-            event=decision.upper(),
-            request_id=request.id,
-            title=request.title,
-            detail=f"note={note or 'none'}",
+        logger.info(
+            "Decision %s on request #%s: %s",
+            decision.upper(),
+            request.id,
+            request.title,
         )
 
     return request

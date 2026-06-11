@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -5,7 +7,29 @@ from app.db.models import AIReview, PurchaseRequest
 from app.schemas.ai_review import AIReviewResult
 from app.services.ai_review_base import AIReviewProvider
 from app.services.mock_ai_provider import MockAIProvider
-from app.services.slack_service import notify_slack
+from app.services.notification_service import notify_request_submitted
+
+logger = logging.getLogger(__name__)
+
+_VALID_RISK_LEVELS = {"low", "medium", "high", "unknown"}
+_VALID_ACTIONS = {"approve", "reject", "request_info", "escalate", "review"}
+
+
+def _sanitize_ai_result(result: dict) -> dict:
+    sanitized = dict(result)
+    if sanitized.get("risk_level") not in _VALID_RISK_LEVELS:
+        logger.warning(
+            "AI returned invalid risk_level=%r, defaulting to 'unknown'",
+            sanitized.get("risk_level"),
+        )
+        sanitized["risk_level"] = "unknown"
+    if sanitized.get("recommended_action") not in _VALID_ACTIONS:
+        logger.warning(
+            "AI returned invalid recommended_action=%r, defaulting to 'review'",
+            sanitized.get("recommended_action"),
+        )
+        sanitized["recommended_action"] = "review"
+    return sanitized
 
 
 def _load_provider() -> AIReviewProvider:
@@ -41,7 +65,9 @@ def generate_ai_review(request: PurchaseRequest, db: Session) -> AIReviewResult:
             confidence=cached.confidence,
         )
 
-    result = _provider.review(request)
+    raw = _provider.review(request)
+    safe = _sanitize_ai_result(raw.model_dump())
+    result = AIReviewResult(**safe)
 
     row = AIReview(
         request_id=request.id,
@@ -59,11 +85,11 @@ def generate_ai_review(request: PurchaseRequest, db: Session) -> AIReviewResult:
     db.commit()
 
     if result.risk_level == "high":
-        notify_slack(
-            event="HIGH RISK",
-            request_id=request.id,
-            title=request.title,
-            detail=f"risk={result.risk_level}, action={result.recommended_action}",
+        logger.warning(
+            "High-risk request #%s: %s - action=%s",
+            request.id,
+            request.title,
+            result.recommended_action,
         )
 
     return result

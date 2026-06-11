@@ -23,4 +23,28 @@ describe('StatusBadge', () => {
       unmount()
     }
   })
+
+  it.each([
+    ['draft', 'Draft', 'badge-draft'],
+    ['pending_review', 'In Review', 'badge-pending'],
+    ['pending_approval', 'Pending Approval', 'badge-approval'],
+    ['needs_rule', 'Needs Routing', 'badge-rule'],
+    ['approved', 'Approved', 'badge-approved'],
+    ['rejected', 'Rejected', 'badge-rejected'],
+    ['needs_more_info', 'Needs Info', 'badge-info'],
+  ] as [RequestStatus, string, string][])(
+    'renders %s with CSS class %s',
+    (status, label, cls) => {
+      render(<StatusBadge status={status} />)
+      const badge = screen.getByLabelText(`Status: ${label}`)
+      expect(badge).toHaveClass(cls)
+    },
+  )
+
+  it('uses badge-unknown class and raw text for unrecognised status', () => {
+    render(<StatusBadge status={'galaxy_brain' as RequestStatus} />)
+    const badge = screen.getByLabelText('Status: galaxy_brain')
+    expect(badge).toHaveClass('badge-unknown')
+    expect(badge).toHaveTextContent('galaxy_brain')
+  })
 })

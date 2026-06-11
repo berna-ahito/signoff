@@ -5,8 +5,8 @@ from app.core.security import get_password_hash
 from app.db.models import AIReview, ApprovalRule, PurchaseRequest, User
 from app.services.mock_ai_provider import MockAIProvider
 
-VALID_ACTIONS = {"request_more_info", "manager_review", "finance_review", "ready_for_rfq"}
-FORBIDDEN_ACTIONS = {"approved", "approve", "rejected", "reject"}
+VALID_ACTIONS = {"approve", "reject", "request_info", "escalate", "review"}
+FORBIDDEN_ACTIONS = {"approved", "rejected", "request_more_info", "manager_review", "finance_review", "ready_for_rfq"}
 
 
 def _add_rules(db):
@@ -36,7 +36,7 @@ def _create_request(client, headers, cost=500.0, desc=None, justification=None):
 def _assert_valid_review(data: dict):
     assert "summary" in data
     assert data["urgency"] in ("low", "medium", "high")
-    assert data["risk_level"] in ("low", "medium", "high")
+    assert data["risk_level"] in ("low", "medium", "high", "unknown")
     assert isinstance(data["missing_info"], list)
     assert data["recommended_action"] in VALID_ACTIONS
     assert "rfq_draft" in data
@@ -240,7 +240,7 @@ def test_mock_provider_high_cost_routes_to_finance():
     provider = MockAIProvider()
     result = provider.review(req)
     assert result.risk_level == "high"
-    assert result.recommended_action == "finance_review"
+    assert result.recommended_action == "escalate"
     assert 0.0 <= result.confidence <= 1.0
 
 
@@ -281,5 +281,5 @@ def test_mock_provider_low_cost_complete_request_ready_for_rfq():
     result = provider.review(req)
     assert result.risk_level == "low"
     assert result.missing_info == []
-    assert result.recommended_action == "ready_for_rfq"
+    assert result.recommended_action == "approve"
     assert result.confidence == 1.0

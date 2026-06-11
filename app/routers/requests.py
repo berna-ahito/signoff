@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import _get_request_or_403, get_current_active_user, require_role
 from app.core.limiter import limiter
 from app.db.base import get_db
 from app.db.models import PurchaseRequest, User
+from app.schemas.pagination import PaginatedResponse
 from app.schemas.purchase_request import (
     PurchaseRequestCreate,
     PurchaseRequestResponse,
@@ -13,6 +14,7 @@ from app.schemas.purchase_request import (
 )
 from app.services.approval_engine import route_request
 from app.services.audit_service import ACTION_ROUTED, ACTION_SUBMITTED, log_action
+from app.services.notification_service import notify_request_submitted
 
 router = APIRouter(prefix="/requests", tags=["requests"])
 
@@ -44,8 +46,12 @@ def create_request(
     return PurchaseRequestResponse.model_validate(req)
 
 
-@router.get("/", response_model=list[PurchaseRequestSummary])
+@router.get("/", response_model=PaginatedResponse[PurchaseRequestSummary])
+@limiter.limit("30/minute")
 def list_requests(
+    request: Request,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
@@ -62,7 +68,9 @@ def list_requests(
             (PurchaseRequest.assigned_role == "finance") |
             (PurchaseRequest.requester_id == current_user.id)
         )
-    return [PurchaseRequestSummary.model_validate(r) for r in q.all()]
+    total = q.count()
+    items = [PurchaseRequestSummary.model_validate(r) for r in q.offset(skip).limit(limit).all()]
+    return PaginatedResponse(items=items, total=total, skip=skip, limit=limit)
 
 
 @router.get("/{request_id}", response_model=PurchaseRequestResponse)
@@ -110,4 +118,9 @@ def submit_request(
     log_action(db, req.id, current_user.id, ACTION_SUBMITTED, old_status, "pending_review")
     req = route_request(db, req)
     log_action(db, req.id, None, ACTION_ROUTED, "pending_review", req.status)
+    approver_emails = [
+        u.email
+        for u in db.query(User).filter(User.role == "manager", User.is_active == True).all()
+    ]
+    notify_request_submitted(req.title, approver_emails)
     return PurchaseRequestResponse.model_validate(req)

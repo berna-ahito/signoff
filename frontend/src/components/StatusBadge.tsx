@@ -25,9 +25,11 @@ const classMap: Record<RequestStatus, string> = {
 }
 
 export function StatusBadge({ status }: Props) {
+  const label = (labelMap as Record<string, string | undefined>)[status] ?? status
+  const cls = (classMap as Record<string, string | undefined>)[status] ?? 'badge-unknown'
   return (
-    <span className={`badge ${classMap[status]}`} aria-label={`Status: ${labelMap[status]}`}>
-      {labelMap[status]}
+    <span className={`badge ${cls}`} aria-label={`Status: ${label}`}>
+      {label}
     </span>
   )
 }

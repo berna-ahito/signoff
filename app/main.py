@@ -6,7 +6,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.core.config import settings
 from app.core.limiter import limiter
-from app.routers import ai_reviews, approvals, audit, auth, requests, users
+from app.routers import ai_reviews, analytics, approvals, attachments, audit, auth, requests, users
 
 _is_production = settings.app_env == "production"
 
@@ -23,7 +23,7 @@ app.add_middleware(SlowAPIMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=settings.cors_origins.split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,6 +46,8 @@ app.include_router(requests.router)
 app.include_router(approvals.router)
 app.include_router(audit.router)
 app.include_router(ai_reviews.router)
+app.include_router(attachments.router)
+app.include_router(analytics.router)
 
 
 @app.get("/health")

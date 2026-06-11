@@ -61,9 +61,9 @@ class MockAIProvider(AIReviewProvider):
 
     def _recommend(self, risk_level: str, missing: list[str]) -> str:
         if missing:
-            return "request_more_info"
+            return "request_info"
         if risk_level == "high":
-            return "finance_review"
+            return "escalate"
         if risk_level == "medium":
-            return "manager_review"
-        return "ready_for_rfq"
+            return "review"
+        return "approve"
