@@ -1,0 +1,64 @@
+@keyframes skeleton-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-2) 25%,
+    color-mix(in srgb, var(--color-border) 60%, transparent) 50%,
+    var(--color-surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+.skeleton--title {
+  height: 20px;
+  width: 45%;
+  margin-bottom: 12px;
+}
+
+.skeleton--line {
+  height: 14px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.skeleton--short {
+  width: 60%;
+}
+
+.skeleton-card {
+  padding: 16px;
+}
+
+.skeleton-lines {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-table {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.skeleton-row {
+  display: flex;
+  gap: 16px;
+  padding: 10px 16px;
+  background: var(--color-surface);
+}
+
+.skeleton--cell {
+  height: 14px;
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.skeleton--cell-wide {
+  width: 160px;
+}

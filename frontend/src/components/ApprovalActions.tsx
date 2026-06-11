@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { decide } from '../api/approvals'
 import type { Decision, RequestDetail, Role } from '../types'
 
@@ -32,10 +33,12 @@ export function ApprovalActions({ request, role, onDecision }: Props) {
     setError(null)
     try {
       await decide(request.id, { decision, note: note || undefined })
+      toast.success('Decision submitted')
       onDecision()
     } catch (e: unknown) {
       const axiosErr = e as { response?: { data?: { detail?: string } }; message?: string }
       const msg = axiosErr?.response?.data?.detail ?? axiosErr?.message ?? 'Failed to submit decision'
+      toast.error(msg)
       setError(msg)
     } finally {
       setLoading(false)

@@ -2,6 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 import app.services.ai_review_service as _ai_svc
 from app.core.limiter import limiter
@@ -26,7 +27,7 @@ from app.main import app
 
 TEST_DATABASE_URL = "sqlite:///./test.db"
 
-test_engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
+test_engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False}, poolclass=NullPool)
 TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
 
 
@@ -45,10 +46,11 @@ def db_session():
 @pytest.fixture
 def client(db_session):
     def override_get_db():
+        db = TestSessionLocal()
         try:
-            yield db_session
+            yield db
         finally:
-            pass
+            db.close()
 
     app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as c:

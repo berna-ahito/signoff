@@ -13,6 +13,56 @@ export type Decision = 'approved' | 'rejected' | 'needs_more_info'
 export interface Token {
   access_token: string
   token_type: string
+  refresh_token: string
+}
+
+export interface AccessToken {
+  access_token: string
+  token_type: string
+}
+
+export interface SpendGroup {
+  category: string
+  total_spend: number
+  request_count: number
+}
+
+export interface CategorySummary {
+  category: string
+  total_spend: number
+  approved_count: number
+  rejected_count: number
+  pending_count: number
+}
+
+export interface Attachment {
+  id: number
+  request_id: number
+  filename: string
+  content_type: string
+  file_size: number
+  uploader_id: number
+  created_at: string
+}
+
+export interface ApprovalRule {
+  id: number
+  name: string
+  category: string | null
+  min_amount: number
+  max_amount: number | null
+  required_role: string
+  priority: number
+  is_active: boolean
+}
+
+export interface ApprovalRuleCreate {
+  name: string
+  min_amount: number
+  max_amount?: number
+  category?: string
+  required_role: 'manager' | 'finance' | 'admin'
+  priority: number
 }
 
 export interface RequestSummary {
@@ -52,6 +102,16 @@ export interface RequestCreate {
   estimated_cost: number
   vendor_id?: number
   justification: string
+}
+
+export interface RequestUpdate {
+  title?: string
+  description?: string
+  category?: string
+  urgency?: Urgency
+  quantity?: number
+  estimated_cost?: number
+  justification?: string
 }
 
 export interface AIReview {

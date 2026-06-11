@@ -44,7 +44,7 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
       >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <BrandMark size={22} accentColor="#93c5fd" />
+            <BrandMark size={22} accentColor="#5eead4" />
             <span>Procure<span className="logo-flow">Flow</span></span>
             <span className="logo-ai">AI</span>
           </div>
@@ -63,11 +63,21 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
             Dashboard
           </NavLink>
 
+          <NavLink
+            to="/requests"
+            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            onClick={closeNav}
+          >
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <path d="M2 2.5a.5.5 0 01.5-.5h10a.5.5 0 010 1H2.5A.5.5 0 012 2.5zm0 4a.5.5 0 01.5-.5h10a.5.5 0 010 1H2.5A.5.5 0 012 6.5zm0 4a.5.5 0 01.5-.5h10a.5.5 0 010 1H2.5a.5.5 0 01-.5-.5z" fill="currentColor"/>
+            </svg>
+            Requests
+          </NavLink>
+
           {role === 'requester' && (
             <NavLink
-              to="/submit"
+              to="/requests/new"
               className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-              aria-current={location.pathname === '/submit' ? 'page' : undefined}
               onClick={closeNav}
             >
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
@@ -92,15 +102,14 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
                 Audit Log
               </NavLink>
               <NavLink
-                to="/users"
-                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-                aria-current={location.pathname === '/users' ? 'page' : undefined}
+                to="/admin"
+                className={({ isActive }) => `nav-link${isActive || location.pathname === '/users' ? ' active' : ''}`}
                 onClick={closeNav}
               >
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
                   <path d="M5 2a2 2 0 100 4 2 2 0 000-4zm0 5c-2.67 0-4 1.34-4 2v1h8v-1c0-.66-1.33-2-4-2zm5-5a2 2 0 100 4 2 2 0 000-4zm0 5c-.34 0-.67.03-1 .09.42.5.67 1.14.67 1.91H14v-1c0-.66-1.33-2-4-2z" fill="currentColor"/>
                 </svg>
-                Users
+                Admin
               </NavLink>
             </>
           )}

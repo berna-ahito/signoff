@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { createUser, listUsers, updateUser } from '../api/users'
 import type { Role, User, UserCreate } from '../types'
 
@@ -28,8 +29,10 @@ export function UserManagementPage() {
   async function handleToggleActive(user: User) {
     try {
       await updateUser(user.id, { is_active: !user.is_active })
+      toast.success(user.is_active ? 'User deactivated' : 'User activated')
       load()
     } catch {
+      toast.error('Failed to update user.')
       setError('Failed to update user.')
     }
   }
@@ -46,6 +49,7 @@ export function UserManagementPage() {
     }
     try {
       await createUser(body)
+      toast.success('User created')
       setEmail('')
       setPassword('')
       setFullName('')
@@ -54,6 +58,7 @@ export function UserManagementPage() {
       load()
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
+      toast.error(msg ?? 'Failed to create user.')
       setCreateError(msg ?? 'Failed to create user.')
     }
   }

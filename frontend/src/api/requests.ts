@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { AIReview, RequestCreate, RequestDetail, RequestSummary } from '../types'
+import type { AIReview, RequestCreate, RequestDetail, RequestSummary, RequestUpdate } from '../types'
 
 export async function listRequests(): Promise<RequestSummary[]> {
   const { data } = await apiClient.get<RequestSummary[]>('/requests/')
@@ -13,6 +13,11 @@ export async function getRequest(id: number): Promise<RequestDetail> {
 
 export async function createRequest(body: RequestCreate): Promise<RequestDetail> {
   const { data } = await apiClient.post<RequestDetail>('/requests/', body)
+  return data
+}
+
+export async function updateRequest(id: number, body: RequestUpdate): Promise<RequestDetail> {
+  const { data } = await apiClient.patch<RequestDetail>(`/requests/${id}`, body)
   return data
 }
 

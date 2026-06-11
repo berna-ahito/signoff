@@ -68,6 +68,8 @@ def update_user(
     user = db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    if user_id == current_user.id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot modify your own account")
     update_data = body.model_dump(exclude_none=True)
     for field, value in update_data.items():
         setattr(user, field, value)
