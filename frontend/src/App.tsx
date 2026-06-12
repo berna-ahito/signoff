@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { Layout } from './components/Layout'
 import { useAuth } from './hooks/useAuth'
 import { AdminPage } from './pages/AdminPage'
@@ -93,16 +94,19 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <Routes>
-        <Route path="/login" element={<LoginPage onLogin={login} />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/login" element={<LoginPage onLogin={login} />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </ErrorBoundary>
     )
   }
 
   return (
     <Layout role={role} onLogout={logout} pageTitle={pageTitle}>
       <Toaster richColors position="top-right" />
+      <ErrorBoundary>
       <Routes>
         <Route path="/login" element={<Navigate to="/dashboard" replace />} />
         <Route
@@ -179,6 +183,7 @@ export default function App() {
         />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
+      </ErrorBoundary>
     </Layout>
   )
 }

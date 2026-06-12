@@ -39,7 +39,7 @@ export function LoginPage({ onLogin }: Props) {
               <div className="login-brand-wordmark">
                 ProcureFlow<span className="login-brand-ai"> AI</span>
               </div>
-              <div className="login-brand-subtitle">Executive Procurement OS</div>
+              <div className="login-brand-subtitle">Structured intake. Human-controlled approvals.</div>
             </div>
           </div>
           <p className="login-brand-tagline">
@@ -52,7 +52,7 @@ export function LoginPage({ onLogin }: Props) {
             <li>Human-controlled approval workflow</li>
           </ul>
         </div>
-        <div className="login-brand-footer">ProcureFlow AI · Portfolio Build</div>
+        <div className="login-brand-footer">ProcureFlow AI · 2026</div>
       </div>
 
       <div className="login-form-panel">
@@ -115,6 +115,7 @@ export function LoginPage({ onLogin }: Props) {
             </button>
           </form>
 
+          {(import.meta.env.MODE === 'development' || import.meta.env.VITE_SHOW_DEMO_ACCOUNTS === 'true') && (
           <div className="login-hint" aria-label="Demo credentials">
             <p style={{ marginBottom: 6 }}>Demo accounts:</p>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
@@ -126,6 +127,7 @@ export function LoginPage({ onLogin }: Props) {
               </tbody>
             </table>
           </div>
+          )}
         </div>
       </div>
     </div>

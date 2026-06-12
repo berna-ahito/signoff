@@ -2,8 +2,8 @@ import { apiClient } from './client'
 import type { AIReview, RequestCreate, RequestDetail, RequestSummary, RequestUpdate } from '../types'
 
 export async function listRequests(): Promise<RequestSummary[]> {
-  const { data } = await apiClient.get<RequestSummary[]>('/requests/')
-  return data
+  const { data } = await apiClient.get<{ items: RequestSummary[] }>('/requests/')
+  return data.items ?? []
 }
 
 export async function getRequest(id: number): Promise<RequestDetail> {
