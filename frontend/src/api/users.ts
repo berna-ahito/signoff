@@ -2,8 +2,8 @@ import { apiClient } from './client'
 import type { User, UserCreate } from '../types'
 
 export async function listUsers(): Promise<User[]> {
-  const { data } = await apiClient.get<User[]>('/users/')
-  return data
+  const { data } = await apiClient.get<{ items: User[] }>('/users/')
+  return data.items ?? []
 }
 
 export async function createUser(body: UserCreate): Promise<User> {
