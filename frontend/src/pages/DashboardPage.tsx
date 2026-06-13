@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FilePlus } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { listRequests } from '../api/requests'
 import { getSpendByCategory } from '../api/analytics'
@@ -15,11 +16,37 @@ function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount)
 }
 
+function hasMetricValue(value: number | null | undefined) {
+  return typeof value === 'number' && value > 0
+}
+
+function formatMetricValue(value: number | null | undefined, formatter: (value: number) => string = String) {
+  return typeof value === 'number' && value > 0 ? formatter(value) : '—'
+}
+
+function metricValueClass(value: number | null | undefined) {
+  return hasMetricValue(value) ? 'stat-value' : 'stat-value stat-value-empty'
+}
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-const CHART_COLORS = ['#0f766e', '#0891b2', '#7c3aed', '#d97706', '#dc2626', '#059669']
+const CHART_COLORS = ['#14B8A6', '#2F81F7', '#3FB950', '#D29922', '#F85149', '#8B949E']
+
+const ROLE_LABEL: Record<Role, string> = {
+  requester: 'Requester',
+  manager: 'Manager',
+  finance: 'Finance',
+  admin: 'Admin',
+}
+
+function getGreetingPrefix() {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour <= 17) return 'Good afternoon'
+  return 'Good evening'
+}
 
 interface CustomTooltipProps {
   active?: boolean
@@ -86,12 +113,14 @@ export function DashboardPage({ role }: Props) {
 
   const pendingCount = requests.filter((r) => r.status === 'pending_approval').length
   const approvedCount = requests.filter((r) => r.status === 'approved').length
-  const totalValue = requests.reduce((sum, r) => sum + r.estimated_cost, 0)
+  const totalValue = requests.reduce((sum, r) => sum + (r.estimated_cost ?? 0), 0)
   const draftCount = requests.filter((r) => r.status === 'draft').length
   const rejectedCount = requests.filter((r) => r.status === 'rejected').length
   const recentRequests = [...requests].sort(
     (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   ).slice(0, 8)
+  const displayName = role ? ROLE_LABEL[role] : 'Guest'
+  const greeting = `${getGreetingPrefix()}, ${displayName}`
 
   return (
     <div className="workbench-shell">
@@ -101,41 +130,35 @@ export function DashboardPage({ role }: Props) {
             <span className="workbench-context-mark" aria-hidden="true" />
             <span className="workbench-context-label">Procurement Operations</span>
           </div>
-          <h2 className="page-title">Procurement Workbench</h2>
-          <p className="page-subtitle">
-            {role === 'requester' ? 'Your submitted purchase requests' : 'Requests assigned for your review'}
-          </p>
+          <h2 className="page-title">{greeting}</h2>
+          <p className="page-subtitle">Overview of all procurement activity</p>
         </div>
         {role === 'requester' && (
-          <button className="btn btn-primary" onClick={() => navigate('/submit')} aria-label="Create new purchase request">
+          <button className="btn btn-primary" onClick={() => navigate('/requests/new')} aria-label="Create new purchase request">
             + New Request
           </button>
         )}
       </div>
 
       <div className="stats-bar" aria-label="Summary statistics">
-        <div className="stat-card" style={{ '--stat-accent': 'var(--color-text-subtle)' } as React.CSSProperties}>
+        <div className="stat-card">
           <div className="stat-label">Total Requests</div>
-          <div className="stat-value">{requests.length}</div>
+          <div className={metricValueClass(requests.length)}>{formatMetricValue(requests.length)}</div>
           <div className="stat-subtext">{draftCount > 0 ? `${draftCount} in draft` : 'all submitted'}</div>
         </div>
-        <div className="stat-card" style={{ '--stat-accent': pendingCount > 0 ? 'var(--color-warning)' : 'var(--color-text-subtle)' } as React.CSSProperties}>
+        <div className="stat-card">
           <div className="stat-label">Awaiting Decision</div>
-          <div className="stat-value" style={pendingCount > 0 ? { color: 'var(--color-warning)' } : {}}>
-            {pendingCount}
-          </div>
+          <div className={metricValueClass(pendingCount)}>{formatMetricValue(pendingCount)}</div>
           <div className="stat-subtext">pending approval</div>
         </div>
-        <div className="stat-card" style={{ '--stat-accent': approvedCount > 0 ? 'var(--color-success)' : 'var(--color-text-subtle)' } as React.CSSProperties}>
+        <div className="stat-card">
           <div className="stat-label">Approved</div>
-          <div className="stat-value" style={approvedCount > 0 ? { color: 'var(--color-success)' } : {}}>
-            {approvedCount}
-          </div>
+          <div className={metricValueClass(approvedCount)}>{formatMetricValue(approvedCount)}</div>
           <div className="stat-subtext">{rejectedCount > 0 ? `${rejectedCount} rejected` : 'no rejections'}</div>
         </div>
-        <div className="stat-card" style={{ '--stat-accent': 'var(--color-primary)' } as React.CSSProperties}>
+        <div className="stat-card">
           <div className="stat-label">Pipeline Value</div>
-          <div className="stat-value" style={{ fontSize: 20 }}>{formatCurrency(totalValue)}</div>
+          <div className={metricValueClass(totalValue)}>{formatMetricValue(totalValue, formatCurrency)}</div>
           <div className="stat-subtext">estimated spend</div>
         </div>
       </div>
@@ -153,13 +176,15 @@ export function DashboardPage({ role }: Props) {
             </button>
           </div>
           {recentRequests.length === 0 ? (
-            <div className="empty-state">
-              <p>No requests yet.</p>
-              {role === 'requester' && (
-                <button className="btn btn-primary" onClick={() => navigate('/submit')}>
-                  Create your first request
-                </button>
-              )}
+            <div className="dashboard-empty-state">
+              <FilePlus className="dashboard-empty-icon" size={34} strokeWidth={1.7} aria-hidden="true" />
+              <h3 className="dashboard-empty-title">No requests yet</h3>
+              <p className="dashboard-empty-description">
+                Purchase requests submitted by your team will appear here.
+              </p>
+              <button className="btn btn-primary dashboard-empty-cta" onClick={() => navigate('/requests/new')}>
+                + New Request
+              </button>
             </div>
           ) : (
             <div className="table-wrap">

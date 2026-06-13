@@ -37,7 +37,7 @@ describe('AuditPage', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByText('submitted')).toBeInTheDocument()
+      expect(screen.getByText('Submitted')).toBeInTheDocument()
     })
   })
 })

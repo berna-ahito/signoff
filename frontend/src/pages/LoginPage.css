@@ -6,7 +6,7 @@
 
 /* ── Brand panel ─────────────────────────────────────────── */
 .login-brand-panel {
-  background: #0f1f2e;
+  background: #090D12;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -20,7 +20,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(240,246,252,0.04) 1px, transparent 1px);
   background-size: 24px 24px;
   pointer-events: none;
 }
@@ -42,29 +42,43 @@
   font-family: var(--font-display);
   font-size: 22px;
   font-weight: 700;
-  color: #e8edf2;
+  color: #E6EDF3;
   letter-spacing: -0.4px;
   line-height: 1.2;
 }
 
 .login-brand-ai {
-  color: #93c5fd;
+  color: #2F81F7;
 }
 
 .login-brand-subtitle {
-  font-size: 10.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #5a7a96;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: rgba(180, 210, 240, 0.8);
   margin-top: 4px;
+}
+
+.login-brand-headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 62px;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: #E6EDF3;
+  max-width: 440px;
+}
+
+.login-brand-headline-accent {
+  color: #14B8A6;
 }
 
 .login-brand-tagline {
   font-size: 17px;
   font-weight: 400;
-  color: #7a92a8;
-  line-height: 1.65;
+  color: #B0C4D8;
+  line-height: 1.7;
   max-width: 340px;
 }
 
@@ -76,32 +90,38 @@
 }
 
 .login-brand-features li {
-  font-size: 13.5px;
-  color: #7a92a8;
+  font-size: 17px;
+  color: #C8DCF0;
   padding-left: 22px;
   position: relative;
   line-height: 1.5;
+}
+
+.login-brand-features li strong {
+  color: #FFFFFF;
+  font-weight: 600;
 }
 
 .login-brand-features li::before {
   content: '→';
   position: absolute;
   left: 0;
-  color: #93c5fd;
+  color: #2F81F7;
   font-size: 12px;
 }
 
 .login-brand-footer {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: #2e4056;
+  font-size: 13px;
+  color: rgba(180, 210, 240, 0.4);
   letter-spacing: 0.04em;
   position: relative;
 }
 
 /* ── Form panel ──────────────────────────────────────────── */
 .login-form-panel {
-  background: var(--color-canvas);
+  background: #090D12;
+  border-left: 1px solid rgba(240,246,252,0.06);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,10 +131,10 @@
 .login-card {
   width: 100%;
   max-width: 380px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  background: #1E2840;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px rgba(47,129,247,0.15), 0 20px 60px rgba(0,0,0,0.4);
   padding: 32px 28px;
   display: flex;
   flex-direction: column;
@@ -124,17 +144,6 @@
 }
 
 /* Primary blue top accent bar */
-.login-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--color-primary);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-}
-
 .login-header {
   text-align: center;
 }
@@ -166,9 +175,9 @@
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
-  color: var(--color-ai-hover);
-  background: var(--color-ai-subtle);
-  border: 1px solid rgba(8, 145, 178, 0.25);
+  color: #14B8A6;
+  background: rgba(20,184,166,0.10);
+  border: 1px solid rgba(20,184,166,0.24);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
   margin-left: 8px;
@@ -212,6 +221,7 @@
 }
 
 .login-hint table {
+  width: 100%;
   border-collapse: collapse;
 }
 
@@ -236,11 +246,64 @@
 .login-hint code {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--color-ai-hover);
-  background: var(--color-ai-subtle);
-  border: 1px solid rgba(8, 145, 178, 0.15);
+  color: #14B8A6;
+  background: rgba(20,184,166,0.10);
+  border: 1px solid rgba(20,184,166,0.20);
   padding: 1px 5px;
   border-radius: var(--radius-sm);
+}
+
+/* ── Login form input overrides ─────────────────────────── */
+.login-card .form-input {
+  background: rgba(240,246,252,0.06);
+  border: 1px solid rgba(240,246,252,0.12);
+  color: #E6EDF3;
+  font-size: 16px;
+}
+
+.login-card .form-input::placeholder {
+  color: #484F58;
+  font-size: 16px;
+}
+
+.login-card .form-input:focus {
+  border-color: #2F81F7;
+  background: rgba(240,246,252,0.08);
+  box-shadow: 0 0 0 3px rgba(47,129,247,0.12);
+  outline: none;
+}
+
+.login-hint {
+  background: rgba(240,246,252,0.04) !important;
+  border-color: rgba(240,246,252,0.10) !important;
+}
+
+.login-card .btn-primary {
+  background: #2F81F7;
+  color: #0D1117;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.login-card .btn-primary:hover:not(:disabled) {
+  background: #1F6FEB;
+}
+
+.login-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-demo-toggle {
+  align-self: center;
+  border: none;
+  background: transparent;
+  color: rgba(47,129,247,0.5);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0;
 }
 
 /* ── Mobile: hide brand panel ────────────────────────────── */
