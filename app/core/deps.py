@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.security import decode_access_token
 from app.db.base import get_db
-from app.db.models import PurchaseRequest, User
+from app.db.models import Invoice, PurchaseOrder, PurchaseRequest, User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -59,3 +59,30 @@ def _get_request_or_403(db: Session, request_id: int, current_user: User) -> Pur
     if current_user.role == "finance" and req.assigned_role != "finance" and req.requester_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
     return req
+
+
+def _get_procurement_request_or_403(db: Session, request_id: int, current_user: User) -> PurchaseRequest:
+    req = db.get(PurchaseRequest, request_id)
+    if req is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Request not found")
+    if current_user.role not in ("admin", "finance"):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    return req
+
+
+def _get_purchase_order_or_403(db: Session, purchase_order_id: int, current_user: User) -> PurchaseOrder:
+    po = db.get(PurchaseOrder, purchase_order_id)
+    if po is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Purchase order not found")
+    if current_user.role in ("admin", "finance"):
+        return po
+    _get_request_or_403(db, po.request_id, current_user)
+    return po
+
+
+def _get_invoice_or_403(db: Session, invoice_id: int, current_user: User) -> Invoice:
+    invoice = db.get(Invoice, invoice_id)
+    if invoice is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invoice not found")
+    _get_purchase_order_or_403(db, invoice.purchase_order_id, current_user)
+    return invoice

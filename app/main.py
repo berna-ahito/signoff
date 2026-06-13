@@ -9,7 +9,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.core.config import settings
 from app.core.limiter import limiter
-from app.routers import ai_reviews, analytics, approvals, attachments, audit, auth, requests, users
+from app.routers import ai_reviews, analytics, approvals, attachments, audit, auth, departments, purchase_orders, requests, users, vendors
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +55,10 @@ async def security_headers(request: Request, call_next) -> Response:
 
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(departments.router)
+app.include_router(vendors.router)
 app.include_router(requests.router)
+app.include_router(purchase_orders.router)
 app.include_router(approvals.router)
 app.include_router(audit.router)
 app.include_router(ai_reviews.router)

@@ -7,6 +7,7 @@ A portfolio-grade full-stack procurement workflow system. Turns messy purchase r
 - **Intake** — structured purchase request form with drag-and-drop file attachments (5 MB / 5 file limits)
 - **AI review** — provider-agnostic classification, risk scoring, and missing-field detection (MockProvider by default; swap for Gemini/Groq/Ollama)
 - **Approval chain** — role-based routing (requester → manager → finance), full status-transition enforcement, audit log on every change
+- **Procure-to-pay controls** — departments/budgets, vendor records, purchase orders, receiving, invoice verification, and request comments
 - **RFQ drafting** — AI-generated request-for-quote text with one click
 - **Admin panel** — user management, spend analytics by category, CSV-exportable summaries
 - **Auth** — JWT access tokens + refresh tokens, RBAC, IDOR protection on every resource
@@ -127,6 +128,7 @@ procureflow-ai/
 - File downloads use `Content-Disposition: attachment` with sanitised filenames.
 - Rate limiting is enabled on all mutation endpoints.
 - No secrets committed; see `.env.example`.
+- Purchase order export currently returns printable HTML from `/purchase-orders/{id}/pdf`; true PDF generation is future work unless a safe dependency is added.
 
 ## License
 

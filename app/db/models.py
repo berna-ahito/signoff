@@ -14,6 +14,9 @@ class Department(Base):
     __tablename__ = "departments"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)
+    code = Column(String(20), unique=True, nullable=True)
+    monthly_budget = Column(Float, nullable=False, default=0.0)
+    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=_now)
 
 
@@ -34,7 +37,14 @@ class Vendor(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     contact_email = Column(String(255), nullable=True)
+    contact_name = Column(String(255), nullable=True)
+    email = Column(String(255), nullable=True)
+    phone = Column(String(50), nullable=True)
+    category = Column(String(100), nullable=True)
+    payment_terms = Column(String(100), nullable=True)
+    is_preferred = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
+    notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=_now)
 
 
@@ -48,14 +58,27 @@ class PurchaseRequest(Base):
     quantity = Column(Integer, nullable=False)
     estimated_cost = Column(Float, nullable=False)
     vendor_id = Column(Integer, ForeignKey("vendors.id"), nullable=True)
+    vendor_name = Column(String(255), nullable=True)
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
     justification = Column(Text, nullable=False)
     status = Column(String(50), nullable=False, default="draft")
     requester_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     assigned_role = Column(String(50), nullable=True)
+    submitted_at = Column(DateTime, nullable=True)
+    approval_due_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=_now)
     updated_at = Column(DateTime, default=_now, onupdate=_now)
 
     ai_review = relationship("AIReview", back_populates="request", uselist=False)
+
+    @property
+    def overdue(self) -> bool:
+        if self.status != "pending_approval" or self.approval_due_at is None:
+            return False
+        due_at = self.approval_due_at
+        if due_at.tzinfo is None:
+            due_at = due_at.replace(tzinfo=timezone.utc)
+        return due_at < _now()
 
 
 class ApprovalRule(Base):
@@ -121,6 +144,68 @@ class RequestAttachment(Base):
     content_type = Column(String(100), nullable=False)
     file_data = Column(LargeBinary, nullable=False)
     uploaded_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=_now)
+
+
+class PurchaseOrder(Base):
+    __tablename__ = "purchase_orders"
+    id = Column(Integer, primary_key=True, index=True)
+    po_number = Column(String(20), unique=True, nullable=False, index=True)
+    request_id = Column(Integer, ForeignKey("purchase_requests.id"), unique=True, nullable=False)
+    vendor_id = Column(Integer, ForeignKey("vendors.id"), nullable=True)
+    status = Column(String(50), nullable=False, default="draft")
+    issued_at = Column(DateTime, nullable=True)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=_now)
+
+    request = relationship("PurchaseRequest")
+    line_items = relationship("PurchaseOrderLineItem", back_populates="purchase_order", cascade="all, delete-orphan")
+
+
+class PurchaseOrderLineItem(Base):
+    __tablename__ = "purchase_order_line_items"
+    id = Column(Integer, primary_key=True, index=True)
+    purchase_order_id = Column(Integer, ForeignKey("purchase_orders.id"), nullable=False)
+    description = Column(String(500), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    unit_price = Column(Float, nullable=False)
+    total_price = Column(Float, nullable=False)
+
+    purchase_order = relationship("PurchaseOrder", back_populates="line_items")
+
+
+class ReceivingRecord(Base):
+    __tablename__ = "receiving_records"
+    id = Column(Integer, primary_key=True, index=True)
+    purchase_order_id = Column(Integer, ForeignKey("purchase_orders.id"), nullable=False)
+    received_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    received_at = Column(DateTime, default=_now)
+    status = Column(String(50), nullable=False)
+    note = Column(Text, nullable=True)
+
+
+class Invoice(Base):
+    __tablename__ = "invoices"
+    id = Column(Integer, primary_key=True, index=True)
+    purchase_order_id = Column(Integer, ForeignKey("purchase_orders.id"), nullable=False)
+    invoice_number = Column(String(100), nullable=False)
+    invoice_amount = Column(Float, nullable=False)
+    invoice_date = Column(DateTime, nullable=False)
+    status = Column(String(50), nullable=False, default="uploaded")
+    attachment_id = Column(Integer, ForeignKey("request_attachments.id"), nullable=True)
+    uploaded_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=_now)
+
+
+class RequestComment(Base):
+    __tablename__ = "request_comments"
+    id = Column(Integer, primary_key=True, index=True)
+    request_id = Column(Integer, ForeignKey("purchase_requests.id"), nullable=False)
+    author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    body = Column(Text, nullable=False)
+    visibility = Column(String(50), nullable=False, default="public")
     created_at = Column(DateTime, default=_now)
 
 
