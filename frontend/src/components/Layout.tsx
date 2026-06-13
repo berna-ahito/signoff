@@ -45,7 +45,7 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
       >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <BrandMark size={22} accentColor="#0B9ED4" />
+            <BrandMark size={22} accentColor="#2F81F7" />
             <span>Procure<span className="logo-flow">Flow</span></span>
             <span className="logo-ai">AI</span>
           </div>
@@ -90,7 +90,7 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
 
           {role === 'admin' && (
             <>
-              <div className="nav-section-label" style={{ marginTop: 16, marginBottom: 4, fontSize: 11, color: 'var(--color-text-subtle)', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '0 12px' }}>Admin</div>
+              <div className="nav-section-label">Admin</div>
               <NavLink
                 to="/audit"
                 className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}

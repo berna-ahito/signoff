@@ -14,6 +14,7 @@ export function LoginPage({ onLogin }: Props) {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showDemoAccounts, setShowDemoAccounts] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -34,7 +35,7 @@ export function LoginPage({ onLogin }: Props) {
       <div className="login-brand-panel" aria-hidden="true">
         <div className="login-brand-content">
           <div className="login-brand-identity">
-            <BrandMark size={40} accentColor="#0B9ED4" />
+            <BrandMark size={40} accentColor="#2F81F7" />
             <div>
               <div className="login-brand-wordmark">
                 ProcureFlow<span className="login-brand-ai"> AI</span>
@@ -62,7 +63,7 @@ export function LoginPage({ onLogin }: Props) {
         <div className="login-card">
           <div className="login-header">
             <div className="login-logo-row">
-              <BrandMark size={20} variant="light" />
+              <BrandMark size={20} variant="light" accentColor="#2F81F7" />
               <div className="login-logo">
                 Procure<span className="logo-flow">Flow</span>
                 <span className="login-ai-tag">AI</span>
@@ -119,17 +120,30 @@ export function LoginPage({ onLogin }: Props) {
           </form>
 
           {(import.meta.env.MODE === 'development' || import.meta.env.VITE_SHOW_DEMO_ACCOUNTS === 'true') && (
-          <div className="login-hint" aria-label="Demo credentials">
-            <p style={{ marginBottom: 6 }}>Demo accounts:</p>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
-              <tbody>
-                <tr><td><code>alice@test.com</code></td><td style={{ color: 'var(--color-text-subtle)' }}>alice123</td><td style={{ color: 'var(--color-text-subtle)', textAlign: 'right' }}>Requester</td></tr>
-                <tr><td><code>bob@test.com</code></td><td style={{ color: 'var(--color-text-subtle)' }}>bob123</td><td style={{ color: 'var(--color-text-subtle)', textAlign: 'right' }}>Manager</td></tr>
-                <tr><td><code>carol@test.com</code></td><td style={{ color: 'var(--color-text-subtle)' }}>carol123</td><td style={{ color: 'var(--color-text-subtle)', textAlign: 'right' }}>Finance</td></tr>
-                <tr><td><code>admin@test.com</code></td><td style={{ color: 'var(--color-text-subtle)' }}>admin123</td><td style={{ color: 'var(--color-text-subtle)', textAlign: 'right' }}>Admin</td></tr>
-              </tbody>
-            </table>
-          </div>
+            <div className="login-demo">
+              <button
+                type="button"
+                className="login-demo-toggle"
+                onClick={() => setShowDemoAccounts((value) => !value)}
+                aria-expanded={showDemoAccounts}
+                aria-controls="demo-accounts"
+              >
+                {showDemoAccounts ? 'Hide demo accounts ↑' : 'View demo accounts ↓'}
+              </button>
+              {showDemoAccounts && (
+                <div id="demo-accounts" className="login-hint" aria-label="Demo credentials">
+                  <p>Demo accounts:</p>
+                  <table>
+                    <tbody>
+                      <tr><td><code>alice@test.com</code></td><td>alice123</td><td>Requester</td></tr>
+                      <tr><td><code>bob@test.com</code></td><td>bob123</td><td>Manager</td></tr>
+                      <tr><td><code>carol@test.com</code></td><td>carol123</td><td>Finance</td></tr>
+                      <tr><td><code>admin@test.com</code></td><td>admin123</td><td>Admin</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
