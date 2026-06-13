@@ -207,7 +207,7 @@ input, textarea, select {
 
 .sidebar-logo {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--color-text);
   letter-spacing: -0.2px;
@@ -223,7 +223,7 @@ input, textarea, select {
 
 .sidebar-logo .logo-ai {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 10.5px;
   font-weight: 500;
   color: var(--color-ai);
   background: rgba(20,184,166,0.10);
@@ -513,9 +513,9 @@ input, textarea, select {
 }
 
 .card-title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  color: #8B949E;
+  color: #94A3B8;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -544,11 +544,11 @@ table {
 th {
   text-align: left;
   padding: 8px 14px;
-  font-size: 10.5px;
+  font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: var(--color-text-subtle);
+  color: #94A3B8;
   background: var(--color-canvas);
   border-bottom: 2px solid var(--color-border);
 }
@@ -556,9 +556,9 @@ th {
 td {
   padding: 11px 14px;
   border-bottom: 1px solid var(--color-border-light);
-  font-size: 13px;
+  font-size: 15px;
   vertical-align: middle;
-  color: var(--color-text);
+  color: #D4D9E0;
   transition: background 0.12s;
 }
 
@@ -689,7 +689,7 @@ tbody tr:focus-visible {
   font-family: var(--font-display);
   font-size: 28px;
   font-weight: 700;
-  color: var(--color-text);
+  color: #FFFFFF;
   letter-spacing: -0.4px;
 }
 
@@ -702,7 +702,7 @@ tbody tr:focus-visible {
 
 .page-subtitle {
   font-size: 16px;
-  color: #8B949E;
+  color: #94A3B8;
   margin-top: 3px;
 }
 
@@ -870,8 +870,8 @@ tbody tr:focus-visible {
 }
 
 .stat-card {
-  background: #161B22;
-  border: 1px solid rgba(240,246,252,0.10);
+  background: #1E2840;
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-sm);
@@ -881,8 +881,8 @@ tbody tr:focus-visible {
 }
 
 .stat-card:hover {
-  background: #1C2128;
-  border-color: rgba(240,246,252,0.18);
+  background: #243050;
+  border-color: rgba(255,255,255,0.20);
 }
 
 .stat-label {
@@ -898,7 +898,7 @@ tbody tr:focus-visible {
   font-family: var(--font-display);
   font-size: 40px;
   font-weight: 600;
-  color: #E6EDF3;
+  color: #FFFFFF;
   letter-spacing: -0.02em;
   line-height: 1;
 }
@@ -946,13 +946,13 @@ tbody tr:focus-visible {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #8B949E;
+  color: #2F81F7;
 }
 
 /* Stat card secondary text */
 .stat-subtext {
   font-size: 14px;
-  color: #484F58;
+  color: #94A3B8;
   margin-top: 5px;
   font-weight: 400;
   line-height: 1.3;

@@ -51,9 +51,9 @@ export function LoginPage({ onLogin }: Props) {
             and auditable approval trails.
           </p>
           <ul className="login-brand-features">
-            <li>Purchase request intake &amp; validation</li>
-            <li>AI risk classification &amp; RFQ drafting</li>
-            <li>Human-controlled approval workflow</li>
+            <li><strong>Structured intake</strong> &amp; validation</li>
+            <li><strong>AI classification</strong> &amp; RFQ drafting</li>
+            <li><strong>Human approval</strong> workflow</li>
           </ul>
         </div>
         <div className="login-brand-footer">ProcureFlow AI · 2026</div>

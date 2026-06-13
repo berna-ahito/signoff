@@ -52,11 +52,11 @@
 }
 
 .login-brand-subtitle {
-  font-size: 13px;
+  font-size: 14px;
   font-style: italic;
   font-weight: 400;
   letter-spacing: 0;
-  color: rgba(47,129,247,0.6);
+  color: rgba(180, 210, 240, 0.8);
   margin-top: 4px;
 }
 
@@ -71,17 +71,14 @@
 }
 
 .login-brand-headline-accent {
-  background: linear-gradient(135deg, #2F81F7 0%, #14B8A6 70%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #14B8A6;
 }
 
 .login-brand-tagline {
   font-size: 17px;
   font-weight: 400;
-  color: #8B949E;
-  line-height: 1.65;
+  color: #B0C4D8;
+  line-height: 1.7;
   max-width: 340px;
 }
 
@@ -93,11 +90,16 @@
 }
 
 .login-brand-features li {
-  font-size: 13.5px;
-  color: #8B949E;
+  font-size: 17px;
+  color: #C8DCF0;
   padding-left: 22px;
   position: relative;
   line-height: 1.5;
+}
+
+.login-brand-features li strong {
+  color: #FFFFFF;
+  font-weight: 600;
 }
 
 .login-brand-features li::before {
@@ -110,8 +112,8 @@
 
 .login-brand-footer {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: #484F58;
+  font-size: 13px;
+  color: rgba(180, 210, 240, 0.4);
   letter-spacing: 0.04em;
   position: relative;
 }
