@@ -104,3 +104,9 @@ describe('apiClient 401 interceptor', () => {
     expect(window.location.href).toBe('/login')
   })
 })
+
+describe('apiClient base URL', () => {
+  it('defaults to same-origin requests when VITE_API_BASE_URL is unset', () => {
+    expect(apiClient.defaults.baseURL).toBe('')
+  })
+})
