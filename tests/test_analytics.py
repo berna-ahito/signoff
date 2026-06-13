@@ -15,7 +15,7 @@ from app.db.models import PurchaseRequest
 # Helper
 # ---------------------------------------------------------------------------
 
-def _make_request(db, requester_id, category, urgency, cost, status="approved"):
+def _make_request(db, requester_id, category, urgency, cost, status="approved", assigned_role=None):
     req = PurchaseRequest(
         title=f"Test {category}",
         description="Test description for procurement item",
@@ -26,6 +26,7 @@ def _make_request(db, requester_id, category, urgency, cost, status="approved"):
         justification="Required for operations",
         status=status,
         requester_id=requester_id,
+        assigned_role=assigned_role,
     )
     db.add(req)
     db.commit()
@@ -38,14 +39,31 @@ def _make_request(db, requester_id, category, urgency, cost, status="approved"):
 # ===========================================================================
 
 class TestSpendEndpoint:
-    def test_spend_non_admin_returns_403(self, client, auth_headers, seed_users):
-        """Any non-admin role must receive 403."""
-        resp = client.get("/analytics/spend", headers=auth_headers["alice"])
-        assert resp.status_code == 403
+    def test_spend_requester_returns_own_approved_spend(self, client, auth_headers, seed_users, db_session):
+        """Requesters see analytics scoped to their own requests."""
+        alice = seed_users["alice"]
+        bob = seed_users["bob"]
+        _make_request(db_session, alice.id, "IT", "high", 100.0)
+        _make_request(db_session, bob.id, "HR", "low", 999.0)
 
-    def test_spend_non_admin_manager_returns_403(self, client, auth_headers, seed_users):
+        resp = client.get("/analytics/spend", headers=auth_headers["alice"])
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 1
+        assert data[0]["group"] == "IT"
+        assert data[0]["total_estimated_cost"] == pytest.approx(100.0)
+
+    def test_spend_manager_returns_assigned_spend(self, client, auth_headers, seed_users, db_session):
+        alice = seed_users["alice"]
+        _make_request(db_session, alice.id, "IT", "high", 100.0, assigned_role="manager")
+        _make_request(db_session, alice.id, "HR", "low", 999.0, assigned_role="finance")
+
         resp = client.get("/analytics/spend", headers=auth_headers["bob"])
-        assert resp.status_code == 403
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 1
+        assert data[0]["group"] == "IT"
+        assert data[0]["total_estimated_cost"] == pytest.approx(100.0)
 
     def test_spend_empty_returns_empty_list(self, client, auth_headers, seed_users):
         """No approved requests → empty list."""
@@ -180,14 +198,31 @@ class TestSpendEndpoint:
 # ===========================================================================
 
 class TestCategoriesEndpoint:
-    def test_categories_non_admin_returns_403(self, client, auth_headers, seed_users):
-        """Any non-admin role must receive 403."""
-        resp = client.get("/analytics/categories", headers=auth_headers["alice"])
-        assert resp.status_code == 403
+    def test_categories_requester_returns_own_categories(self, client, auth_headers, seed_users, db_session):
+        """Requesters see category analytics scoped to their own requests."""
+        alice = seed_users["alice"]
+        bob = seed_users["bob"]
+        _make_request(db_session, alice.id, "IT", "high", 100.0, status="approved")
+        _make_request(db_session, bob.id, "HR", "low", 999.0, status="approved")
 
-    def test_categories_non_admin_carol_returns_403(self, client, auth_headers, seed_users):
+        resp = client.get("/analytics/categories", headers=auth_headers["alice"])
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 1
+        assert data[0]["category"] == "IT"
+        assert data[0]["approved_total"] == pytest.approx(100.0)
+
+    def test_categories_finance_returns_assigned_categories(self, client, auth_headers, seed_users, db_session):
+        alice = seed_users["alice"]
+        _make_request(db_session, alice.id, "IT", "high", 100.0, status="approved", assigned_role="finance")
+        _make_request(db_session, alice.id, "HR", "low", 999.0, status="approved", assigned_role="manager")
+
         resp = client.get("/analytics/categories", headers=auth_headers["carol"])
-        assert resp.status_code == 403
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 1
+        assert data[0]["category"] == "IT"
+        assert data[0]["approved_total"] == pytest.approx(100.0)
 
     def test_categories_empty_returns_empty_list(self, client, auth_headers, seed_users):
         """No requests → empty list."""
@@ -252,6 +287,7 @@ class TestCategoriesEndpoint:
         alice = seed_users["alice"]
         _make_request(db_session, alice.id, "IT", "high", 10.0, status="draft")
         _make_request(db_session, alice.id, "IT", "low", 20.0, status="submitted")
+        _make_request(db_session, alice.id, "IT", "medium", 40.0, status="pending_approval")
 
         resp = client.get("/analytics/categories", headers=auth_headers["admin"])
         assert resp.status_code == 200
@@ -261,8 +297,8 @@ class TestCategoriesEndpoint:
         assert it["category"] == "IT"
         assert it["approved_count"] == 0
         assert it["approved_total"] == pytest.approx(0.0)
-        assert it["pending_count"] == 2
-        assert it["pending_total"] == pytest.approx(30.0)
+        assert it["pending_count"] == 3
+        assert it["pending_total"] == pytest.approx(70.0)
 
     def test_categories_sorted_alphabetically(self, client, auth_headers, seed_users, db_session):
         """Response is sorted alphabetically by category regardless of insertion order."""

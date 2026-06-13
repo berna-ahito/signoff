@@ -7,7 +7,6 @@ from app.db.models import AIReview, PurchaseRequest
 from app.schemas.ai_review import AIReviewResult
 from app.services.ai_review_base import AIReviewProvider
 from app.services.mock_ai_provider import MockAIProvider
-from app.services.notification_service import notify_request_submitted
 
 logger = logging.getLogger(__name__)
 

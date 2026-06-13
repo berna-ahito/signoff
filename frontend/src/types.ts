@@ -22,17 +22,17 @@ export interface AccessToken {
 }
 
 export interface SpendGroup {
-  category: string
-  total_spend: number
-  request_count: number
+  group: string
+  count: number
+  total_estimated_cost: number
 }
 
 export interface CategorySummary {
   category: string
-  total_spend: number
   approved_count: number
-  rejected_count: number
+  approved_total: number
   pending_count: number
+  pending_total: number
 }
 
 export interface Attachment {
@@ -118,9 +118,9 @@ export interface AIReview {
   summary: string
   category: string
   urgency: 'low' | 'medium' | 'high'
-  risk_level: 'low' | 'medium' | 'high'
+  risk_level: 'low' | 'medium' | 'high' | 'unknown'
   missing_info: string[]
-  recommended_action: 'request_more_info' | 'manager_review' | 'finance_review' | 'ready_for_rfq'
+  recommended_action: 'approve' | 'reject' | 'request_info' | 'escalate' | 'review'
   rfq_draft: string
   confidence: number
 }

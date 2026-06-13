@@ -252,14 +252,14 @@ export function DashboardPage({ role }: Props) {
                   />
                   <YAxis
                     type="category"
-                    dataKey="category"
+                    dataKey="group"
                     width={80}
                     tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <Tooltip content={<SpendTooltip />} cursor={{ fill: 'rgba(15,118,110,0.06)' }} />
-                  <Bar dataKey="total_spend" radius={[0, 3, 3, 0]}>
+                  <Bar dataKey="total_estimated_cost" radius={[0, 3, 3, 0]}>
                     {spendData.map((_, idx) => (
                       <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
                     ))}
