@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
     approval_sla_days: int = 3
     invoice_match_tolerance: float = 0.01
+    run_seed_on_start: bool = False
 
     model_config = SettingsConfigDict(env_file=".env")
 

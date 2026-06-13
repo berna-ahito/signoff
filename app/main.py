@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request, Response
@@ -10,6 +11,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.core.config import settings
 from app.core.limiter import limiter
+from app.db.base import SessionLocal
 from app.routers import ai_reviews, analytics, approvals, attachments, audit, auth, departments, purchase_orders, requests, users, vendors
 
 logger = logging.getLogger(__name__)
@@ -31,12 +33,35 @@ API_SLASH_PREFIX_PATHS = ("/audit", "/requests", "/users")
 
 _is_production = settings.app_env == "production"
 
+
+def run_startup_seed() -> None:
+    if not settings.run_seed_on_start:
+        logger.info("Startup seed skipped: RUN_SEED_ON_START is not true.")
+        return
+
+    from scripts.seed import seed_all
+
+    db = SessionLocal()
+    try:
+        seed_all(db, reset=False)
+        logger.info("Startup seed completed.")
+    finally:
+        db.close()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    run_startup_seed()
+    yield
+
+
 app = FastAPI(
     title="ProcureFlow AI",
     version="0.1.0",
     docs_url=None if _is_production else "/docs",
     redoc_url=None if _is_production else "/redoc",
     openapi_url=None if _is_production else "/openapi.json",
+    lifespan=lifespan,
 )
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -57,7 +82,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 @app.middleware("http")
 async def security_headers(request: Request, call_next) -> Response:
