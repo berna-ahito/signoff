@@ -17,6 +17,7 @@ class PurchaseRequestCreate(BaseModel):
     quantity: int = Field(gt=0)
     estimated_cost: float = Field(gt=0.0)
     vendor_id: Optional[int] = None
+    vendor_name: Optional[str] = Field(default=None, max_length=255)
     justification: str = Field(min_length=10, max_length=1000)
 
 
@@ -28,6 +29,7 @@ class PurchaseRequestUpdate(BaseModel):
     quantity: Optional[int] = Field(default=None, gt=0)
     estimated_cost: Optional[float] = Field(default=None, gt=0.0)
     vendor_id: Optional[int] = None
+    vendor_name: Optional[str] = Field(default=None, max_length=255)
     justification: Optional[str] = None
 
 
@@ -40,10 +42,16 @@ class PurchaseRequestResponse(BaseModel):
     quantity: int
     estimated_cost: float
     vendor_id: Optional[int]
+    vendor_name: Optional[str]
+    department_id: Optional[int]
     justification: str
     status: str
     requester_id: int
     assigned_role: Optional[str]
+    submitted_at: Optional[datetime]
+    approval_due_at: Optional[datetime]
+    overdue: bool = False
+    budget_warning: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     ai_review: Optional[AIReviewResult] = None
@@ -58,5 +66,8 @@ class PurchaseRequestSummary(BaseModel):
     status: str
     estimated_cost: float
     requester_id: int
+    department_id: Optional[int] = None
+    approval_due_at: Optional[datetime] = None
+    overdue: bool = False
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
