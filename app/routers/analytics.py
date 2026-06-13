@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
-from app.core.deps import get_db, require_role
+from app.core.deps import get_current_active_user, get_db
 from app.db.models import PurchaseRequest, User
 from app.schemas.analytics import CategorySummary, SpendGroup
 
@@ -19,6 +19,30 @@ _GROUP_BY_FIELDS = {
     "status": PurchaseRequest.status,
 }
 
+_PENDING_STATUSES = [
+    "draft",
+    "submitted",
+    "pending_review",
+    "pending_approval",
+    "needs_rule",
+    "needs_more_info",
+]
+
+
+def _scope_to_user(query, current_user: User):
+    if current_user.role == "admin":
+        return query
+    if current_user.role == "requester":
+        return query.filter(PurchaseRequest.requester_id == current_user.id)
+    if current_user.role in ("manager", "finance"):
+        return query.filter(
+            or_(
+                PurchaseRequest.assigned_role == current_user.role,
+                PurchaseRequest.requester_id == current_user.id,
+            )
+        )
+    return query.filter(PurchaseRequest.requester_id == current_user.id)
+
 
 @router.get("/spend", response_model=list[SpendGroup])
 def get_spend(
@@ -26,7 +50,7 @@ def get_spend(
     date_to: Optional[str] = Query(None),
     group_by: str = Query("category"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role("admin")),
+    current_user: User = Depends(get_current_active_user),
 ) -> list[SpendGroup]:
     if group_by not in _VALID_GROUP_BY:
         raise HTTPException(
@@ -58,13 +82,14 @@ def get_spend(
 
     group_field = _GROUP_BY_FIELDS[group_by]
 
-    query = (
+    query = _scope_to_user(
         db.query(
             group_field.label("group"),
             func.count(PurchaseRequest.id).label("count"),
             func.coalesce(func.sum(PurchaseRequest.estimated_cost), 0.0).label("total"),
         )
-        .filter(PurchaseRequest.status == "approved")
+        .filter(PurchaseRequest.status == "approved"),
+        current_user,
     )
 
     if dt_from is not None:
@@ -83,35 +108,46 @@ def get_spend(
 @router.get("/categories", response_model=list[CategorySummary])
 def get_categories(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role("admin")),
+    current_user: User = Depends(get_current_active_user),
 ) -> list[CategorySummary]:
     # Query 1: approved counts/totals per category
-    approved_rows = (
+    approved_rows = _scope_to_user(
         db.query(
             PurchaseRequest.category.label("category"),
             func.count(PurchaseRequest.id).label("count"),
             func.coalesce(func.sum(PurchaseRequest.estimated_cost), 0.0).label("total"),
         )
-        .filter(PurchaseRequest.status == "approved")
+        .filter(PurchaseRequest.status == "approved"),
+        current_user,
+    )
+    approved_rows = (
+        approved_rows
         .group_by(PurchaseRequest.category)
         .all()
     )
 
     # Query 2: pending (submitted or draft) counts/totals per category
-    pending_rows = (
+    pending_rows = _scope_to_user(
         db.query(
             PurchaseRequest.category.label("category"),
             func.count(PurchaseRequest.id).label("count"),
             func.coalesce(func.sum(PurchaseRequest.estimated_cost), 0.0).label("total"),
         )
-        .filter(PurchaseRequest.status.in_(["submitted", "draft"]))
+        .filter(PurchaseRequest.status.in_(_PENDING_STATUSES)),
+        current_user,
+    )
+    pending_rows = (
+        pending_rows
         .group_by(PurchaseRequest.category)
         .all()
     )
 
     # Query 3: all distinct categories (any status)
     all_cats = (
-        db.query(PurchaseRequest.category.label("category"))
+        _scope_to_user(
+            db.query(PurchaseRequest.category.label("category")),
+            current_user,
+        )
         .distinct()
         .all()
     )

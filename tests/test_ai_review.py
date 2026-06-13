@@ -183,6 +183,30 @@ def test_ai_review_cached_on_second_call(client, seed_users, auth_headers, db_se
     assert len(rows) == 1
 
 
+def test_get_ai_review_returns_cached_review(client, seed_users, auth_headers, db_session):
+    resp = _create_request(client, auth_headers["alice"])
+    req_id = resp.json()["id"]
+
+    created = client.post(f"/requests/{req_id}/ai-review", headers=auth_headers["alice"])
+    cached = client.get(f"/requests/{req_id}/ai-review", headers=auth_headers["alice"])
+
+    assert created.status_code == 200
+    assert cached.status_code == 200
+    assert cached.json() == created.json()
+
+    rows = db_session.query(AIReview).filter_by(request_id=req_id).all()
+    assert len(rows) == 1
+
+
+def test_get_ai_review_missing_cache_returns_404(client, seed_users, auth_headers):
+    resp = _create_request(client, auth_headers["alice"])
+    req_id = resp.json()["id"]
+
+    cached = client.get(f"/requests/{req_id}/ai-review", headers=auth_headers["alice"])
+
+    assert cached.status_code == 404
+
+
 def test_get_request_embeds_ai_review_after_review(client, seed_users, auth_headers):
     resp = _create_request(client, auth_headers["alice"])
     req_id = resp.json()["id"]

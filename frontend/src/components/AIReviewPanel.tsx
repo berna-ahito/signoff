@@ -8,10 +8,11 @@ interface Props {
 }
 
 const actionLabels: Record<AIReview['recommended_action'], string> = {
-  request_more_info: 'Request More Info',
-  manager_review: 'Manager Review',
-  finance_review: 'Finance Review',
-  ready_for_rfq: 'Ready for RFQ',
+  approve: 'Approve',
+  reject: 'Reject',
+  request_info: 'Request More Info',
+  escalate: 'Escalate',
+  review: 'Review',
 }
 
 const riskClass: Record<string, string> = {

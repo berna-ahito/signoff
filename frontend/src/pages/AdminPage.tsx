@@ -435,12 +435,12 @@ function AnalyticsPanel() {
                   type="number" tick={{ fontSize: 11 }}
                   tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
                 />
-                <YAxis dataKey="category" type="category" tick={{ fontSize: 12 }} width={84} />
+                <YAxis dataKey="group" type="category" tick={{ fontSize: 12 }} width={84} />
                 <Tooltip
                   formatter={(v) => [`$${Number(v).toLocaleString()}`, 'Total Spend']}
                   contentStyle={{ fontSize: 12 }}
                 />
-                <Bar dataKey="total_spend" radius={[0, 4, 4, 0]}>
+                <Bar dataKey="total_estimated_cost" radius={[0, 4, 4, 0]}>
                   {spend.map((_item, i) => (
                     <Cell key={i} fill={SPEND_COLORS[i % SPEND_COLORS.length]} />
                   ))}
@@ -466,7 +466,6 @@ function AnalyticsPanel() {
                 <Tooltip contentStyle={{ fontSize: 12 }} />
                 <Legend iconSize={10} wrapperStyle={{ fontSize: 12 }} />
                 <Bar dataKey="approved_count" name="Approved" fill="#0f766e" stackId="a" />
-                <Bar dataKey="rejected_count" name="Rejected" fill="#dc2626" stackId="a" />
                 <Bar
                   dataKey="pending_count" name="Pending" fill="#d97706"
                   stackId="a" radius={[0, 4, 4, 0]}

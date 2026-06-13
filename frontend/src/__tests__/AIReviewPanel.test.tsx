@@ -11,7 +11,7 @@ const mockReview: AIReview = {
   urgency: 'low',
   risk_level: 'low',
   missing_info: [],
-  recommended_action: 'manager_review',
+  recommended_action: 'review',
   rfq_draft: 'Request for Quotation: 1x laptop',
   confidence: 0.87,
 }
@@ -32,5 +32,6 @@ describe('AIReviewPanel', () => {
       expect(screen.getByText(mockReview.summary)).toBeInTheDocument()
     })
     expect(screen.getAllByText('low').length).toBeGreaterThan(0)
+    expect(screen.getByText('Review')).toBeInTheDocument()
   })
 })
