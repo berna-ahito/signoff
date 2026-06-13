@@ -120,8 +120,8 @@
 
 /* ── Form panel — light ───────────────────────────────────── */
 .login-form-panel {
-  background: #F6F8FA;
-  border-left: 1px solid #D0D7DE;
+  background: #F8F5F0;
+  border-left: 1px solid #D3CBBA;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,8 +131,8 @@
 .login-card {
   width: 100%;
   max-width: 380px;
-  background: #FFFFFF;
-  border: 1px solid #D0D7DE;
+  background: #FDFAF5;
+  border: 1px solid #D3CBBA;
   border-radius: 14px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
   padding: 40px;
@@ -204,8 +204,8 @@
   color: var(--color-text-subtle);
   text-align: left;
   line-height: 1.5;
-  background: #F6F8FA;
-  border: 1px solid #D0D7DE;
+  background: #F8F5F0;
+  border: 1px solid #D3CBBA;
   border-radius: var(--radius);
   padding: 10px 12px;
 }
@@ -254,8 +254,8 @@
 
 /* ── Login form input overrides ─────────────────────────── */
 .login-card .form-input {
-  background: #FFFFFF;
-  border: 1px solid #D0D7DE;
+  background: #FDFAF5;
+  border: 1px solid #D3CBBA;
   color: #1F2328;
   font-size: 16px;
 }
@@ -267,7 +267,7 @@
 
 .login-card .form-input:focus {
   border-color: #0969DA;
-  background: #FFFFFF;
+  background: #FDFAF5;
   box-shadow: 0 0 0 3px rgba(9,105,218,0.12);
   outline: none;
 }

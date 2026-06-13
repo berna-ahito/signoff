@@ -19,15 +19,15 @@
   --color-sidebar-border: rgba(255,255,255,0.08);
 
   /* Main content — LIGHT */
-  --color-bg-base:     #F6F8FA;
-  --color-bg-surface:  #FFFFFF;
-  --color-bg-elevated: #EAEEF2;
+  --color-bg-base:     #F8F5F0;
+  --color-bg-surface:  #FDFAF5;
+  --color-bg-elevated: #EDE7DC;
 
   /* Backward-compat aliases */
-  --color-canvas:    #F6F8FA;
-  --color-bg:        #F6F8FA;
-  --color-surface:   #FFFFFF;
-  --color-surface-2: #EAEEF2;
+  --color-canvas:    #F8F5F0;
+  --color-bg:        #F8F5F0;
+  --color-surface:   #FDFAF5;
+  --color-surface-2: #EDE7DC;
 
   /* Accent — GitHub blue */
   --color-primary:       #0969DA;
@@ -47,9 +47,9 @@
   --color-text-subtle:    #9198A1;
 
   /* Borders */
-  --color-border:        #D0D7DE;
-  --color-border-subtle: #EAEEF2;
-  --color-border-light:  #EAEEF2;
+  --color-border:        #D3CBBA;
+  --color-border-subtle: #EDE7DC;
+  --color-border-light:  #EDE7DC;
 
   /* AI layer */
   --color-ai:        #0D9488;
@@ -69,7 +69,7 @@
   --color-success-subtle: rgba(26,127,55,0.10);
 
   /* Status badge colors — light palette (GitHub semantic) */
-  --badge-draft-bg:      #EAEEF2;
+  --badge-draft-bg:      #EDE7DC;
   --badge-draft-text:    #636C76;
 
   --badge-pending-bg:    #FFF8C5;
@@ -107,23 +107,23 @@
   --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
 
   /* shadcn overrides */
-  --background:           #F6F8FA;
+  --background:           #F8F5F0;
   --foreground:           #1F2328;
-  --card:                 #FFFFFF;
+  --card:                 #FDFAF5;
   --card-foreground:      #1F2328;
-  --popover:              #FFFFFF;
+  --popover:              #FDFAF5;
   --popover-foreground:   #1F2328;
   --primary:              #0969DA;
   --primary-foreground:   #FFFFFF;
-  --secondary:            #EAEEF2;
+  --secondary:            #EDE7DC;
   --secondary-foreground: #1F2328;
-  --muted:                #EAEEF2;
+  --muted:                #EDE7DC;
   --muted-foreground:     #636C76;
-  --accent:               #EAEEF2;
+  --accent:               #EDE7DC;
   --accent-foreground:    #1F2328;
   --destructive:          #CF222E;
-  --border:               #D0D7DE;
-  --input:                #F6F8FA;
+  --border:               #D3CBBA;
+  --input:                #F8F5F0;
   --ring:                 #0969DA;
   --chart-1:              #0969DA;
   --chart-2:              #0D9488;
@@ -142,7 +142,7 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: #F6F8FA;
+  background-color: #F8F5F0;
   color: #1F2328;
   font-size: 16px;
   line-height: 1.6;
@@ -403,12 +403,12 @@ input, textarea, select {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  background-color: #F6F8FA;
+  background-color: #F8F5F0;
 }
 
 .topbar {
-  background: #FFFFFF;
-  border-bottom: 1px solid #D0D7DE;
+  background: #FDFAF5;
+  border-bottom: 1px solid #D3CBBA;
   padding: 0 24px;
   height: 52px;
   display: flex;
@@ -482,15 +482,15 @@ input, textarea, select {
 }
 
 .btn-outline {
-  background: #FFFFFF;
+  background: #FDFAF5;
   color: #636C76;
-  border: 1px solid #D0D7DE;
+  border: 1px solid #D3CBBA;
 }
 
 .btn-outline:hover:not(:disabled) {
   border-color: #636C76;
   color: #1F2328;
-  background: #F6F8FA;
+  background: #F8F5F0;
 }
 
 .btn-ghost {
@@ -501,7 +501,7 @@ input, textarea, select {
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background: #EAEEF2;
+  background: #EDE7DC;
   color: #1F2328;
 }
 
@@ -512,15 +512,15 @@ input, textarea, select {
 
 /* Cards */
 .card {
-  background: #FFFFFF;
-  border: 1px solid #D0D7DE;
+  background: #FDFAF5;
+  border: 1px solid #D3CBBA;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
 
 .card-header {
   padding: 11px 16px;
-  border-bottom: 1px solid #D0D7DE;
+  border-bottom: 1px solid #D3CBBA;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -541,9 +541,9 @@ input, textarea, select {
 
 /* Decision panel prominence — human outranks AI */
 .card-prominent {
-  border-color: #D0D7DE;
+  border-color: #D3CBBA;
   box-shadow: var(--shadow);
-  background: #FFFFFF;
+  background: #FDFAF5;
 }
 
 /* Tables */
@@ -564,13 +564,13 @@ th {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #636C76;
-  background: #F6F8FA;
-  border-bottom: 1px solid #D0D7DE;
+  background: #F8F5F0;
+  border-bottom: 1px solid #D3CBBA;
 }
 
 td {
   padding: 11px 14px;
-  border-bottom: 1px solid #EAEEF2;
+  border-bottom: 1px solid #EDE7DC;
   font-size: 15px;
   vertical-align: middle;
   color: #1F2328;
@@ -582,7 +582,7 @@ tr:last-child td {
 }
 
 tbody tr:hover {
-  background: #F6F8FA;
+  background: #F8F5F0;
   cursor: pointer;
 }
 
@@ -615,10 +615,10 @@ tbody tr:focus-visible {
 .form-select,
 .form-textarea {
   padding: 8px 10px;
-  border: 1px solid #D0D7DE;
+  border: 1px solid #D3CBBA;
   border-radius: var(--radius);
   font-size: 16px;
-  background: #FFFFFF;
+  background: #FDFAF5;
   color: #1F2328;
   transition: border-color 0.15s, box-shadow 0.15s;
   width: 100%;
@@ -639,7 +639,7 @@ tbody tr:focus-visible {
 }
 
 .form-select option {
-  background: #FFFFFF;
+  background: #FDFAF5;
   color: #1F2328;
 }
 
@@ -749,7 +749,7 @@ tbody tr:focus-visible {
 .spinner {
   width: 15px;
   height: 15px;
-  border: 1.5px solid #D0D7DE;
+  border: 1.5px solid #D3CBBA;
   border-top-color: #0969DA;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -854,7 +854,7 @@ tbody tr:focus-visible {
 
 .divider {
   border: none;
-  border-top: 1px solid #D0D7DE;
+  border-top: 1px solid #D3CBBA;
   margin: 16px 0;
 }
 
@@ -885,8 +885,8 @@ tbody tr:focus-visible {
 }
 
 .stat-card {
-  background: #FFFFFF;
-  border: 1px solid #D0D7DE;
+  background: #FDFAF5;
+  border: 1px solid #D3CBBA;
   border-radius: 10px;
   padding: 20px 24px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
@@ -931,7 +931,7 @@ tbody tr:focus-visible {
   justify-content: space-between;
   gap: 16px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #D0D7DE;
+  border-bottom: 1px solid #D3CBBA;
   margin-bottom: 20px;
 }
 
@@ -975,7 +975,7 @@ tbody tr:focus-visible {
 
 /* Table card */
 .card-table {
-  border-top: 1px solid #D0D7DE;
+  border-top: 1px solid #D3CBBA;
 }
 
 /* AI disclaimer — teal advisory tone */
@@ -1000,7 +1000,7 @@ tbody tr:focus-visible {
   color: #636C76;
   line-height: 1.5;
   padding-top: 12px;
-  border-top: 1px solid #D0D7DE;
+  border-top: 1px solid #D3CBBA;
   margin-top: 4px;
 }
 
@@ -1033,7 +1033,7 @@ tbody tr:focus-visible {
 }
 
 .sidebar-toggle:hover {
-  background: #EAEEF2;
+  background: #EDE7DC;
   color: #1F2328;
 }
 
@@ -1106,7 +1106,7 @@ tbody tr:focus-visible {
   content: '';
   flex: 1;
   height: 1px;
-  background: #D0D7DE;
+  background: #D3CBBA;
 }
 
 @theme inline {
@@ -1200,27 +1200,27 @@ tbody tr:focus-visible {
 
 /* Audit log table — light */
 .audit-table-wrap {
-  background: #FFFFFF;
+  background: #FDFAF5;
   border-radius: 10px;
-  border: 1px solid #D0D7DE;
+  border: 1px solid #D3CBBA;
   overflow: hidden;
 }
 
 .audit-table thead tr {
-  background: #F6F8FA;
+  background: #F8F5F0;
 }
 
 .audit-table th {
   font-size: 12px;
   padding: 12px 16px;
   letter-spacing: 0.06em;
-  background: #F6F8FA;
+  background: #F8F5F0;
 }
 
 .audit-table td {
   font-size: 14px;
   padding: 12px 16px;
-  border-bottom: 1px solid #EAEEF2;
+  border-bottom: 1px solid #EDE7DC;
 }
 
 .audit-table tbody tr:last-child td {
@@ -1228,7 +1228,7 @@ tbody tr:focus-visible {
 }
 
 .audit-table tbody tr:hover {
-  background: #F6F8FA;
+  background: #F8F5F0;
 }
 
 .audit-time {
@@ -1246,7 +1246,7 @@ tbody tr:focus-visible {
 
 /* File Dropzone */
 .file-dropzone {
-  border: 2px dashed #D0D7DE;
+  border: 2px dashed #D3CBBA;
   border-radius: 8px;
   padding: 32px 24px;
   text-align: center;
@@ -1298,8 +1298,8 @@ tbody tr:focus-visible {
   gap: 10px;
   padding: 8px 12px;
   border-radius: 6px;
-  background: #FFFFFF;
-  border: 1px solid #D0D7DE;
+  background: #FDFAF5;
+  border: 1px solid #D3CBBA;
   font-size: 13px;
 }
 
