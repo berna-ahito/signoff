@@ -1,11 +1,7 @@
 import argparse
-import os
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-
-if os.getenv("APP_ENV") == "production":
-    raise RuntimeError("Seed script must not run in production")
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -487,6 +483,9 @@ def main():
     parser = argparse.ArgumentParser(description="Seed ProcureFlow AI demo data.")
     parser.add_argument("--reset", action="store_true", help="Delete request data and reseed.")
     args = parser.parse_args()
+
+    if settings.app_env == "production":
+        raise RuntimeError("Seed script must not be run directly in production")
 
     Base.metadata.create_all(engine)
     db = SessionLocal()
