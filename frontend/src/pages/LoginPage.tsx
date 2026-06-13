@@ -34,7 +34,7 @@ export function LoginPage({ onLogin }: Props) {
       <div className="login-brand-panel" aria-hidden="true">
         <div className="login-brand-content">
           <div className="login-brand-identity">
-            <BrandMark size={40} accentColor="#93c5fd" />
+            <BrandMark size={40} accentColor="#0B9ED4" />
             <div>
               <div className="login-brand-wordmark">
                 ProcureFlow<span className="login-brand-ai"> AI</span>
@@ -42,6 +42,9 @@ export function LoginPage({ onLogin }: Props) {
               <div className="login-brand-subtitle">Structured intake. Human-controlled approvals.</div>
             </div>
           </div>
+          <h1 className="login-brand-headline">
+            Purchase requests that actually get approved <span className="login-brand-headline-accent">correctly.</span>
+          </h1>
           <p className="login-brand-tagline">
             Structured intake, AI-assisted review,<br />
             and auditable approval trails.

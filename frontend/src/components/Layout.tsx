@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { LogOut } from 'lucide-react'
 import { BrandMark } from './BrandMark'
 import type { Role } from '../types'
 
@@ -44,7 +45,7 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
       >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <BrandMark size={22} accentColor="#5eead4" />
+            <BrandMark size={22} accentColor="#0B9ED4" />
             <span>Procure<span className="logo-flow">Flow</span></span>
             <span className="logo-ai">AI</span>
           </div>
@@ -116,16 +117,23 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
         </div>
 
         <div className="sidebar-footer">
-          <div className="sidebar-role-chip">
-            {role ? roleLabel[role] : '—'}
+          <div className="sidebar-user-card">
+            <div className="sidebar-user-avatar" aria-hidden="true">
+              {role ? roleLabel[role][0].toUpperCase() : '?'}
+            </div>
+            <div className="sidebar-user-info">
+              <div className="sidebar-user-name">{role ? roleLabel[role] : 'Guest'}</div>
+              <div className="sidebar-user-role">{role ?? ''}</div>
+            </div>
+            <button
+              className="sidebar-logout-btn"
+              onClick={handleLogout}
+              aria-label="Sign out"
+              title="Sign out"
+            >
+              <LogOut size={14} aria-hidden="true" />
+            </button>
           </div>
-          <button
-            className="btn btn-ghost"
-            style={{ width: '100%', justifyContent: 'flex-start', fontSize: 13 }}
-            onClick={handleLogout}
-          >
-            Sign out
-          </button>
         </div>
       </nav>
 

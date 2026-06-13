@@ -6,7 +6,7 @@
 
 /* ── Brand panel ─────────────────────────────────────────── */
 .login-brand-panel {
-  background: #0f1f2e;
+  background: #060F1A;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -20,7 +20,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(11, 158, 212, 0.06) 1px, transparent 1px);
   background-size: 24px 24px;
   pointer-events: none;
 }
@@ -48,7 +48,7 @@
 }
 
 .login-brand-ai {
-  color: #93c5fd;
+  color: #0B9ED4;
 }
 
 .login-brand-subtitle {
@@ -58,6 +58,23 @@
   letter-spacing: 0.1em;
   color: #5a7a96;
   margin-top: 4px;
+}
+
+.login-brand-headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 62px;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: #D4E5F2;
+  max-width: 440px;
+}
+
+.login-brand-headline-accent {
+  background: linear-gradient(135deg, #0B9ED4 0%, #14B8A6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .login-brand-tagline {
@@ -87,7 +104,7 @@
   content: '→';
   position: absolute;
   left: 0;
-  color: #93c5fd;
+  color: #0B9ED4;
   font-size: 12px;
 }
 
@@ -101,7 +118,8 @@
 
 /* ── Form panel ──────────────────────────────────────────── */
 .login-form-panel {
-  background: var(--color-canvas);
+  background: #060F1A;
+  border-left: 1px solid rgba(11, 158, 212, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -241,6 +259,29 @@
   border: 1px solid rgba(8, 145, 178, 0.15);
   padding: 1px 5px;
   border-radius: var(--radius-sm);
+}
+
+/* ── Login form input overrides ─────────────────────────── */
+.login-card .form-input {
+  background: rgba(11, 158, 212, 0.06);
+  border-color: rgba(11, 158, 212, 0.15);
+  color: #D4E5F2;
+}
+
+.login-card .form-input::placeholder {
+  color: rgba(107, 143, 168, 0.6);
+}
+
+.login-card .form-input:focus {
+  border-color: #0B9ED4;
+  background: rgba(11, 158, 212, 0.10);
+  box-shadow: 0 0 0 3px rgba(11, 158, 212, 0.12);
+  outline: none;
+}
+
+.login-hint {
+  background: rgba(11, 158, 212, 0.04) !important;
+  border-color: rgba(11, 158, 212, 0.12) !important;
 }
 
 /* ── Mobile: hide brand panel ────────────────────────────── */
