@@ -53,20 +53,16 @@ export function LoginPage({ onLogin }: Props) {
               <div className="login-brand-wordmark">
                 Signoff
               </div>
-              <div className="login-brand-subtitle">AI-assisted approval workflow with RBAC, audit logs, and human review.</div>
+              <div className="login-brand-subtitle">Purchase approvals without the spreadsheet chase.</div>
             </div>
           </div>
           <h1 className="login-brand-headline">
-            Purchase requests that actually get approved <span className="login-brand-headline-accent">correctly.</span>
+            Turn purchase requests into structured reviews, routed approvals, and audit-ready decision records.
           </h1>
-          <p className="login-brand-tagline">
-            Structured intake, AI-assisted review,<br />
-            and auditable approval trails.
-          </p>
           <ul className="login-brand-features">
-            <li><strong>Structured intake</strong> &amp; validation</li>
-            <li><strong>AI classification</strong> &amp; RFQ drafting</li>
-            <li><strong>Human approval</strong> workflow</li>
+            <li>Submit requests with files</li>
+            <li>Route approvals by role and amount</li>
+            <li>Review AI risk notes before deciding</li>
           </ul>
         </div>
         <div className="login-brand-footer">Signoff · 2026</div>

@@ -2,9 +2,13 @@
 
 <img src="docs/assets/signoff-header.svg" alt="Signoff — AI-assisted approval workflow" width="900">
 
-**AI-assisted approval workflow with RBAC, audit logs, and human review.**
+**A demo procurement approval app for turning messy purchase requests into reviewed, routed, and auditable decisions.**
 
-A full-stack procurement approval system built on purchase-request intake, configurable role-based routing, AI risk classification, and an append-only audit trail — with humans making every approve/reject decision.
+A demo procurement approval app for teams that need clearer purchase decisions.
+
+Signoff turns purchase requests into a structured workflow: employees submit what they need, managers and finance review the right requests, AI flags missing details or risk, and every decision is saved in an audit trail.
+
+This repo is built as a portfolio-grade full-stack application, not a production SaaS. It includes sample users and demo purchase data so reviewers can log in and test the workflow immediately.
 
 [![Backend Tests](https://img.shields.io/badge/backend-170%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
 [![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
@@ -17,26 +21,30 @@ A full-stack procurement approval system built on purchase-request intake, confi
 
 ## The problem this solves
 
-Without a system, procurement lives in Slack threads and email chains. Requests get approved by whoever's available, not whoever's authorized. Spend goes untracked. Vendors get paid without anyone reviewing the quote.
+Small teams often approve purchases through Slack, email, spreadsheets, or whoever happens to reply first. That makes it hard to answer basic questions:
 
-Signoff routes every purchase request through the right approval chain — manager for standard amounts, finance above a threshold — with an AI pre-review on each one and an append-only audit trail on every decision.
+* Who requested this?
+* Who approved it?
+* Was finance supposed to review it?
+* What quote or file supported the decision?
+* What changed after the request was submitted?
 
-> Screenshots will be added after deployment. See the [Quick Start](#quick-start) section below for demo credentials.
+Signoff gives that process one place to live. A request moves from intake to review to approval, with role-based routing, AI-assisted checks, and an audit trail for every decision.
 
 ---
 
 ## Features
 
-| | Feature | Details |
-|---|---|---|
-| 📋 | **Structured intake** | Form with validation, categorization, urgency, and drag-and-drop file attachments (5 MB / 5 file cap) |
-| 🤖 | **AI review** | Risk classification, missing-field detection, and RFQ draft generation — advisory only, never approves |
-| ✅ | **Approval routing** | Role-based chain: requester → manager → finance. Amount and category thresholds configurable by admin |
-| 🔒 | **State machine** | Valid transitions enforced server-side. No request can skip steps or be approved by the wrong role |
-| 📊 | **Analytics** | Spend by category, monthly trends, pipeline value — visible to admin and finance roles |
-| 🔔 | **Notifications** | Email via Resend on submission and decision. Provider-swappable (mock logs to stdout if key not set) |
-| 🗂️ | **Audit trail** | Every status change logged with actor, action, note, and timestamp. Append-only, no deletes |
-| 🔐 | **Auth** | JWT access tokens (15 min) + server-side refresh tokens (7 days), RBAC, IDOR protection |
+| Feature | Details |
+|---|---|
+| **Structured intake** | Form with validation, categorization, urgency, and drag-and-drop file attachments (5 MB / 5 file cap) |
+| **AI review** | Risk classification, missing-field detection, and RFQ draft generation — advisory only, never approves |
+| **Approval routing** | Role-based chain: requester → manager → finance. Amount and category thresholds configurable by admin |
+| **State machine** | Valid transitions enforced server-side. No request can skip steps or be approved by the wrong role |
+| **Analytics** | Spend by category, monthly trends, pipeline value — visible to admin and finance roles |
+| **Notifications** | Email via Resend on submission and decision. Provider-swappable (mock logs to stdout if key not set) |
+| **Audit trail** | Every status change logged with actor, action, note, and timestamp. Append-only, no deletes |
+| **Auth** | JWT access tokens (15 min) + server-side refresh tokens (7 days), RBAC, IDOR protection |
 
 ---
 
@@ -75,7 +83,15 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`. Demo credentials:
+Open `http://localhost:5173`.
+
+---
+
+## Demo data
+
+The app includes sample users and sample purchase requests. The data is fake on purpose: it lets you test dashboards, approvals, statuses, and audit logs without creating everything from scratch.
+
+Demo credentials:
 
 | Email | Password | Role |
 |---|---|---|
