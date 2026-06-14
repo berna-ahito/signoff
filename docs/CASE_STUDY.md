@@ -1,4 +1,4 @@
-# ProcureFlow AI — Case Study
+# Signoff — Case Study
 
 ## The Problem
 
@@ -18,7 +18,7 @@ This is a portfolio project demonstrating production-grade patterns on a realist
 
 **Rationale:** Prevents liability and maintains human accountability for financial commitments. Any AI system that touches money must have a clear human override point.
 
-**Implementation:** The `recommended_action` field in the `ai_reviews` table is stored as advisory text (e.g., `manager_review`, `finance_review`). The approver's decision — `approved`, `rejected`, or `needs_more_info` — is recorded separately in the `AuditLog` and is the authoritative action that drives the status transition.
+**Implementation:** The `recommended_action` field in the `ai_reviews` table is stored as advisory text (e.g., `approve`, `reject`, `request_info`, `escalate`, `review`). The approver's decision — `approved`, `rejected`, or `needs_more_info` — is recorded separately in the `AuditLog` and is the authoritative action that drives the status transition.
 
 ---
 
@@ -70,7 +70,7 @@ This is a portfolio project demonstrating production-grade patterns on a realist
 - **No mass assignment** — Separate `Create`, `Update`, and `AdminUpdate` Pydantic schemas; requesters cannot set `status` or `assigned_role` via the API
 - **Audit log** — Every status transition appends an `AuditLog` row with `actor_id`, `action`, `old_status`, `new_status`, and `note`; rows are never updated or deleted
 - **Password hashing** — bcrypt via passlib; plaintext passwords never stored or logged
-- **Secrets management** — `.env.example` committed; `.env` gitignored; `SECRET_KEY` validated at startup
+- **Secrets management** — `.env.example` committed; `.env` gitignored; `SECRET_KEY` required in env (startup validation not yet implemented)
 - **Status transition validation** — Only valid transitions are permitted (e.g., only `draft` can be submitted; only `pending_approval` can be decided on)
 
 ---
@@ -82,5 +82,5 @@ This is a portfolio project demonstrating production-grade patterns on a realist
 | MockProvider instead of real AI | Output is deterministic, not intelligent | Free, zero-latency, demonstrates the architecture correctly without paid API dependency |
 | SQLite instead of PostgreSQL | No concurrent writes; not production-safe | Zero infrastructure; demonstrates Alembic migrations; easy to swap via connection string |
 | localStorage for JWT | Vulnerable to XSS if CSP is not set | Acceptable for a portfolio piece; production would use httpOnly cookies with a CSRF token |
-| No full integration test suite | Less coverage than ideal end-to-end | 79+ backend unit tests + 14 frontend tests covers core behaviors; httpx E2E tests deferred |
-| No deployment | Not publicly accessible | Phase 6 (deployment) deferred; all patterns are locally demonstrable and verifiable |
+| No full integration test suite | Less coverage than ideal end-to-end | 170 backend tests at 95% coverage + 37 frontend tests cover core behaviors; E2E smoke tests deferred |
+| Render deployment | API + frontend served from Render; optional Vercel frontend via `vercel.json` | Free-tier hosting; `render.yaml` handles full-stack build in a single service |

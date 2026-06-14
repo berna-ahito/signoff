@@ -1,18 +1,14 @@
 <div align="center">
 
-<!-- Replace the SVG below with your ChatGPT-generated banner once ready -->
-<!-- Save the image as docs/banner.png and update the src -->
-<img src="docs/logo.svg" alt="ProcureFlow AI" height="64" />
+# Signoff
 
-# ProcureFlow AI
+**AI-assisted approval workflow with RBAC, audit logs, and human review.**
 
-**Purchase requests that actually get approved correctly.**
+A full-stack procurement approval system built on purchase-request intake, configurable role-based routing, AI risk classification, and an append-only audit trail — with humans making every approve/reject decision. Originally developed under the repo name `procureflow-ai`.
 
-A full-stack AI-assisted procurement workflow system. Structured intake, role-based approval routing, AI risk classification, and a complete audit trail — with humans always in control of every decision.
-
-[![Backend Tests](https://img.shields.io/badge/backend-160%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/procureflow-ai)
+[![Backend Tests](https://img.shields.io/badge/backend-170%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/procureflow-ai)
 [![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)](https://github.com/berna-ahito/procureflow-ai)
-[![Frontend Tests](https://img.shields.io/badge/frontend-36%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/procureflow-ai)
+[![Frontend Tests](https://img.shields.io/badge/frontend-37%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/procureflow-ai)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
 </div>
@@ -23,27 +19,14 @@ A full-stack AI-assisted procurement workflow system. Structured intake, role-ba
 
 Without a system, procurement lives in Slack threads and email chains. Requests get approved by whoever's available, not whoever's authorized. Spend goes untracked. Vendors get paid without anyone reviewing the quote.
 
-ProcureFlow routes every purchase request through the right approval chain — manager for standard amounts, finance above a threshold — with an AI pre-review on each one and an append-only audit trail on every decision.
+Signoff routes every purchase request through the right approval chain — manager for standard amounts, finance above a threshold — with an AI pre-review on each one and an append-only audit trail on every decision.
 
-<div align="center">
-<img src="docs/screenshots/login.png" alt="Login" width="49%" />
-<img src="docs/screenshots/dashboard.png" alt="Dashboard" width="49%" />
-<img src="docs/screenshots/request-form.png" alt="New request" width="49%" />
-<img src="docs/screenshots/request-detail.png" alt="Request detail" width="49%" />
-</div>
+> Screenshots will be added after deployment. See the [Quick Start](#quick-start) section below for demo credentials.
 
 ---
 
 ## Features
 
-- **Intake** — structured purchase request form with drag-and-drop file attachments (5 MB / 5 file limits)
-- **AI review** — provider-agnostic classification, risk scoring, and missing-field detection (MockProvider by default; swap for Gemini/Groq/Ollama)
-- **Approval chain** — role-based routing (requester → manager → finance), full status-transition enforcement, audit log on every change
-- **Procure-to-pay controls** — departments/budgets, vendor records, purchase orders, receiving, invoice verification, and request comments
-- **RFQ drafting** — AI-generated request-for-quote text with one click
-- **Admin panel** — user management, spend analytics by category, CSV-exportable summaries
-- **Auth** — JWT access tokens + refresh tokens, RBAC, IDOR protection on every resource
-=======
 | | Feature | Details |
 |---|---|---|
 | 📋 | **Structured intake** | Form with validation, categorization, urgency, and drag-and-drop file attachments (5 MB / 5 file cap) |
@@ -67,7 +50,7 @@ ProcureFlow routes every purchase request through the right approval chain — m
 | UI | shadcn/ui · Tailwind CSS · Motion |
 | Charts | Recharts |
 | AI | Groq API (MockProvider default — no key needed) |
-| Tests | pytest · 144 passing · 95% coverage · Vitest · 35 passing |
+| Tests | pytest · 170 passing · 95% coverage · Vitest · 37 passing |
 | Deploy | Render (API) · Vercel (frontend) · Neon (database) |
 
 ---
@@ -107,13 +90,13 @@ Open `http://localhost:5173`. Demo credentials:
 
 - **IDOR/BOLA** — every resource goes through `_get_request_or_403`. Ownership verified per request, not inferred from session
 - **No mass assignment** — separate `Create`, `Update`, and `AdminUpdate` schemas. Users cannot self-elevate role
-- **Refresh tokens** — stored server-side, rotated on use, explicitly revoked on logout
+- **Refresh tokens** — stored server-side, revoked on logout (rotation on refresh not implemented in current version)
 - **AI output validation** — `risk_level` and `recommended_action` validated against an allowlist before persist
-- **File uploads** — MIME type allowlist, filenames sanitized, 5 MB cap enforced before reading into memory
+- **File uploads** — 5 MB cap enforced before reading into memory, count limited to 5; safe `Content-Disposition` headers on download
 - **Rate limiting** — SlowAPI on all mutation and read endpoints. 5/min on login
 - **Security headers** — `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` on every response
 - **No docs in production** — `/docs`, `/redoc`, `/openapi.json` disabled when `APP_ENV=production`
-- **Startup guards** — app refuses to start in production with a placeholder `SECRET_KEY`
+- **Authentication** — all endpoints except `/health` require authentication; admin-only routes enforce `require_role("admin")`
 
 ---
 
@@ -163,10 +146,10 @@ VITE_API_BASE_URL=https://your-render-service.onrender.com
 ## Tests
 
 ```bash
-# Backend (160 passing, 95% coverage)
+# Backend (170 passing, 95% coverage)
 py -m pytest --cov=app --cov-report=term-missing
 
-# Frontend (36 passing)
+# Frontend (37 passing)
 cd frontend && npm test -- --run
 ```
 
@@ -195,33 +178,6 @@ procureflow-ai/
 └── .env.example
 ```
 
-## Deployment
-
-### API → Render
-
-1. Push to GitHub.
-2. Create a **Web Service** on [render.com](https://render.com) and connect the repo.
-3. Render picks up `render.yaml` automatically.
-4. Set `SECRET_KEY` in the Render environment dashboard (mark as secret).
-
-### Frontend → Vercel
-
-1. Import the repo on [vercel.com](https://vercel.com) with root directory set to `frontend/`.
-2. Set `VITE_API_BASE_URL` to your Render service URL.
-3. `frontend/vercel.json` handles the SPA fallback rewrite.
-
-## Security notes
-
-- All endpoints require authentication; admin-only routes enforce `require_role("admin")`.
-- IDOR/BOLA protection: every resource fetch verifies ownership or role.
-- Refresh tokens are stored server-side and rotated on use.
-- File downloads use `Content-Disposition: attachment` with sanitised filenames.
-- Rate limiting is enabled on all mutation endpoints.
-- No secrets committed; see `.env.example`.
-- Purchase order export currently returns printable HTML from `/purchase-orders/{id}/pdf`; true PDF generation is future work unless a safe dependency is added.
-=======
----
-
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
