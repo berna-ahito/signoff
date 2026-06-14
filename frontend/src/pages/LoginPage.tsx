@@ -57,12 +57,16 @@ export function LoginPage({ onLogin }: Props) {
             </div>
           </div>
           <h1 className="login-brand-headline">
-            Turn purchase requests into structured reviews, routed approvals, and audit-ready decision records.
+            Turn purchase requests into<br />
+            <span className="login-brand-headline-accent">approved</span> decisions.
           </h1>
+          <p className="login-brand-tagline">
+            Submit requests, route reviews, and keep an audit trail.
+          </p>
           <ul className="login-brand-features">
             <li>Submit requests with files</li>
-            <li>Route approvals by role and amount</li>
-            <li>Review AI risk notes before deciding</li>
+            <li>Route reviews by role and amount</li>
+            <li>Track every decision</li>
           </ul>
         </div>
         <div className="login-brand-footer">Signoff · 2026</div>

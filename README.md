@@ -1,14 +1,10 @@
 <div align="center">
 
-<img src="docs/assets/signoff-header.svg" alt="Signoff — AI-assisted approval workflow" width="900">
+<img src="docs/assets/signoff-header.svg" alt="Signoff: AI-assisted approval workflow" width="900">
 
-**A demo procurement approval app for turning messy purchase requests into reviewed, routed, and auditable decisions.**
+**A procurement approval app for purchase requests, approval routing, AI-assisted review, and audit trails.**
 
-A demo procurement approval app for teams that need clearer purchase decisions.
-
-Signoff turns purchase requests into a structured workflow: employees submit what they need, managers and finance review the right requests, AI flags missing details or risk, and every decision is saved in an audit trail.
-
-This repo is built as a portfolio-grade full-stack application, not a production SaaS. It includes sample users and demo purchase data so reviewers can log in and test the workflow immediately.
+Signoff helps teams manage purchase requests in one place. Employees submit requests, managers and finance reviewers approve or reject them, and every decision is saved in an audit trail. AI helps review requests and flag missing information, but people make the final approval decisions.
 
 [![Backend Tests](https://img.shields.io/badge/backend-170%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
 [![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
@@ -21,30 +17,23 @@ This repo is built as a portfolio-grade full-stack application, not a production
 
 ## The problem this solves
 
-Small teams often approve purchases through Slack, email, spreadsheets, or whoever happens to reply first. That makes it hard to answer basic questions:
+Procurement requests often start in email, chat, or spreadsheets. That makes it hard to know who approved a request, whether the right person reviewed it, and what changed after the decision.
 
-* Who requested this?
-* Who approved it?
-* Was finance supposed to review it?
-* What quote or file supported the decision?
-* What changed after the request was submitted?
-
-Signoff gives that process one place to live. A request moves from intake to review to approval, with role-based routing, AI-assisted checks, and an audit trail for every decision.
+Signoff gives that process one place to live. It keeps the request, approval path, AI review, and audit history together.
 
 ---
 
 ## Features
 
-| Feature | Details |
+| Feature | What it does |
 |---|---|
-| **Structured intake** | Form with validation, categorization, urgency, and drag-and-drop file attachments (5 MB / 5 file cap) |
-| **AI review** | Risk classification, missing-field detection, and RFQ draft generation — advisory only, never approves |
-| **Approval routing** | Role-based chain: requester → manager → finance. Amount and category thresholds configurable by admin |
-| **State machine** | Valid transitions enforced server-side. No request can skip steps or be approved by the wrong role |
-| **Analytics** | Spend by category, monthly trends, pipeline value — visible to admin and finance roles |
-| **Notifications** | Email via Resend on submission and decision. Provider-swappable (mock logs to stdout if key not set) |
-| **Audit trail** | Every status change logged with actor, action, note, and timestamp. Append-only, no deletes |
-| **Auth** | JWT access tokens (15 min) + server-side refresh tokens (7 days), RBAC, IDOR protection |
+| Request intake | Employees submit purchase requests with category, urgency, amount, vendor details, and attachments. |
+| Approval routing | Requests move through manager and finance review based on amount and category rules. |
+| AI-assisted review | AI flags risk, missing information, and can draft an RFQ. It does not approve or reject requests. |
+| Audit trail | Status changes, reviewers, notes, and timestamps are recorded for review. |
+| Role-based access | Requesters, managers, finance users, and admins see different actions and data. |
+| Dashboard | Shows request volume, approval status, spend by category, and recent activity. |
+| Notifications | Sends submission and decision updates when email is configured. Logs locally when email is not configured. |
 
 ---
 
@@ -57,41 +46,15 @@ Signoff gives that process one place to live. A request moves from intake to rev
 | Frontend | React 18 · Vite · TypeScript |
 | UI | shadcn/ui · Tailwind CSS · Motion |
 | Charts | Recharts |
-| AI | Groq API (MockProvider default — no key needed) |
+| AI | Groq API (MockProvider default, no key needed) |
 | Tests | pytest · 170 passing · 95% coverage · Vitest · 38 passing |
-| Deploy | Render (API) · Vercel (frontend) · Neon (database) |
+| Deploy | Render (single web service) · Neon (database) |
 
 ---
 
-## Quick start
+## Try the demo
 
-**Prerequisites:** Python 3.11+, Node.js 20+
-
-```bash
-# Backend
-py -m pip install -r requirements.txt
-cp .env.example .env          # set SECRET_KEY at minimum
-py -m alembic upgrade head
-py scripts/seed.py            # loads demo data
-py -m uvicorn app.main:app --reload
-```
-
-```bash
-# Frontend (separate terminal)
-cd frontend
-npm install
-npm run dev
-```
-
-Open `http://localhost:5173`.
-
----
-
-## Demo data
-
-The app includes sample users and sample purchase requests. The data is fake on purpose: it lets you test dashboards, approvals, statuses, and audit logs without creating everything from scratch.
-
-Demo credentials:
+The demo includes seeded purchase requests so reviewers can see the dashboard, request list, role-based approval flow, and audit log immediately. The data is fake and uses realistic purchase amounts.
 
 | Email | Password | Role |
 |---|---|---|
@@ -102,60 +65,70 @@ Demo credentials:
 
 ---
 
+## Quick start
+
+**Prerequisites:** Python 3.11+, Node.js 20+
+
+~~~bash
+# Backend
+py -m pip install -r requirements.txt
+cp .env.example .env          # set SECRET_KEY at minimum
+py -m alembic upgrade head
+py scripts/seed.py            # loads demo data
+py -m uvicorn app.main:app --reload
+~~~
+
+~~~bash
+# Frontend (separate terminal)
+cd frontend
+npm install
+npm run dev
+~~~
+
+Open `http://localhost:5173`. Demo credentials are listed in Try the demo above.
+
+---
+
 ## Security
 
-- **IDOR/BOLA** — every resource goes through `_get_request_or_403`. Ownership verified per request, not inferred from session
-- **No mass assignment** — separate `Create`, `Update`, and `AdminUpdate` schemas. Users cannot self-elevate role
-- **Refresh tokens** — stored server-side, revoked on logout (rotation on refresh not implemented in current version)
-- **AI output validation** — `risk_level` and `recommended_action` validated against an allowlist before persist
-- **File uploads** — 5 MB cap enforced before reading into memory, count limited to 5; safe `Content-Disposition` headers on download
-- **Rate limiting** — SlowAPI on all mutation and read endpoints. 5/min on login
-- **Security headers** — `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` on every response
-- **No docs in production** — `/docs`, `/redoc`, `/openapi.json` disabled when `APP_ENV=production`
-- **Authentication** — all endpoints except `/health` require authentication; admin-only routes enforce `require_role("admin")`
+- **IDOR/BOLA:** every resource goes through `_get_request_or_403`. Ownership is checked per request.
+- **No mass assignment:** separate `Create`, `Update`, and `AdminUpdate` schemas. Users cannot change their own role.
+- **Refresh tokens:** stored server-side and revoked on logout. Rotation on refresh is not implemented in this version.
+- **AI output validation:** `risk_level` and `recommended_action` validated against an allowlist before persist.
+- **File uploads:** 5 MB cap enforced before reading into memory, count limited to 5. Safe `Content-Disposition` headers on download.
+- **Rate limiting:** SlowAPI on all mutation and read endpoints. 5/min on login.
+- **Security headers:** `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` on every response.
+- **No docs in production:** `/docs`, `/redoc`, `/openapi.json` disabled when `APP_ENV=production`.
+- **Authentication:** all endpoints except `/health` require authentication. Admin-only routes enforce `require_role("admin")`.
 
 ---
 
 ## Deploy
 
-### 1. Database — Neon (free tier)
-Create a project at [neon.tech](https://neon.tech). Copy the connection string — this becomes your `DATABASE_URL`.
+Live demo URL will be added after the new Render service is created.
 
-### 2. Backend — Render (free tier)
-Connect the repo at [render.com](https://render.com). Render picks up `render.yaml` automatically.
+Signoff is deployed as one Render web service. The backend serves the built frontend.
 
-Set these environment variables in the Render dashboard:
+Required Render environment variables:
 
-| Variable | Value |
-|---|---|
-| `DATABASE_URL` | Your Neon connection string |
-| `SECRET_KEY` | `openssl rand -hex 32` |
-| `GROQ_API_KEY` | Optional — AI reviews use mock provider if not set |
-| `RESEND_API_KEY` | Optional — notifications log to stdout if not set |
-| `CORS_ORIGINS` | Your Vercel frontend URL |
-| `APP_ENV` | `production` |
+| Variable       | Purpose                                                |
+| -------------- | ------------------------------------------------------ |
+| `DATABASE_URL` | PostgreSQL connection string                           |
+| `SECRET_KEY`   | JWT signing secret                                     |
+| `APP_ENV`      | Set to `production`                                    |
+| `CORS_ORIGINS` | Public app origin after Render creates the service URL |
 
-### 3. Frontend — Vercel (free tier)
-Import the repo at [vercel.com](https://vercel.com). Set root directory to `frontend/`. Add one env var:
+Optional Render environment variables:
 
-```
-VITE_API_BASE_URL=https://your-render-service.onrender.com
-```
+| Variable                      | Purpose                                 |
+| ----------------------------- | --------------------------------------- |
+| `GROQ_API_KEY`                | Enables live AI review provider         |
+| `RESEND_API_KEY`              | Enables email notifications             |
+| `RUN_SEED_ON_START`           | Seeds demo data on startup when enabled |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Access token lifetime                   |
+| `REFRESH_TOKEN_EXPIRE_DAYS`   | Refresh token lifetime                  |
 
-`frontend/vercel.json` handles SPA routing automatically.
-
----
-
-## Environment variables
-
-| Variable | Description | Required |
-|---|---|---|
-| `DATABASE_URL` | PostgreSQL connection string | Production |
-| `SECRET_KEY` | JWT signing secret (min 32 chars) | Always |
-| `GROQ_API_KEY` | AI review provider | Optional |
-| `RESEND_API_KEY` | Email notifications | Optional |
-| `CORS_ORIGINS` | Comma-separated allowed origins | Production |
-| `APP_ENV` | Set to `production` to disable `/docs` | Production |
+Do not commit secret values.
 
 ---
 
@@ -174,7 +147,7 @@ Coverage target: ≥ 94% backend, all frontend test suites green.
 ## Project structure
 
 ```
-procureflow-ai/
+signoff/
 ├── app/
 │   ├── core/          # auth, deps, rate limiter, security
 │   ├── db/            # SQLAlchemy models and session
@@ -189,11 +162,10 @@ procureflow-ai/
 │   │   ├── pages/     # route-level page components
 │   │   ├── lib/       # authStore, hooks
 │   │   └── __tests__/ # Vitest unit tests
-│   └── vercel.json
 ├── render.yaml
 └── .env.example
 ```
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
