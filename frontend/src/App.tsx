@@ -90,7 +90,7 @@ export default function App() {
       ? 'Edit Request'
       : location.pathname.startsWith('/requests/')
         ? 'Request Detail'
-        : 'ProcureFlow AI')
+        : 'Signoff')
 
   if (!isAuthenticated) {
     return (

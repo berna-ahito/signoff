@@ -106,7 +106,23 @@ describe('apiClient 401 interceptor', () => {
 })
 
 describe('apiClient base URL', () => {
-  it('defaults to same-origin requests when VITE_API_BASE_URL is unset', () => {
-    expect(apiClient.defaults.baseURL).toBe('')
+  beforeEach(() => {
+    vi.resetModules()
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('uses VITE_API_BASE_URL when set', async () => {
+    vi.stubEnv('VITE_API_BASE_URL', 'https://custom.api')
+    const { apiClient } = await import('../api/client')
+    expect(apiClient.defaults.baseURL).toBe('https://custom.api')
+  })
+
+  it('falls back to http://localhost:8000 in dev mode when VITE_API_BASE_URL is unset', async () => {
+    vi.unstubAllEnvs()
+    const { apiClient } = await import('../api/client')
+    expect(apiClient.defaults.baseURL).toBe('http://localhost:8000')
   })
 })

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import { BrandMark } from '../components/BrandMark'
 import type { Role } from '../types'
 import './LoginPage.css'
@@ -23,8 +24,20 @@ export function LoginPage({ onLogin }: Props) {
     try {
       await onLogin(email, password)
       navigate('/dashboard')
-    } catch {
-      setError('Invalid email or password.')
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (!err.response) {
+          setError('Network error. Cannot reach the server.')
+        } else if (err.response.status === 404) {
+          setError('Auth endpoint not found. Please check API URL.')
+        } else if (err.response.status === 401) {
+          setError('Invalid email or password.')
+        } else {
+          setError(`Server error (${err.response.status}). Please try again.`)
+        }
+      } else {
+        setError('Invalid email or password.')
+      }
     } finally {
       setLoading(false)
     }
@@ -35,12 +48,12 @@ export function LoginPage({ onLogin }: Props) {
       <div className="login-brand-panel" aria-hidden="true">
         <div className="login-brand-content">
           <div className="login-brand-identity">
-            <BrandMark size={40} accentColor="#2F81F7" />
+            <BrandMark size={40} accentColor="#1769E0" />
             <div>
               <div className="login-brand-wordmark">
-                ProcureFlow<span className="login-brand-ai"> AI</span>
+                Signoff
               </div>
-              <div className="login-brand-subtitle">Structured intake. Human-controlled approvals.</div>
+              <div className="login-brand-subtitle">AI-assisted approval workflow with RBAC, audit logs, and human review.</div>
             </div>
           </div>
           <h1 className="login-brand-headline">
@@ -56,17 +69,16 @@ export function LoginPage({ onLogin }: Props) {
             <li><strong>Human approval</strong> workflow</li>
           </ul>
         </div>
-        <div className="login-brand-footer">ProcureFlow AI · 2026</div>
+        <div className="login-brand-footer">Signoff · 2026</div>
       </div>
 
       <div className="login-form-panel">
         <div className="login-card">
           <div className="login-header">
             <div className="login-logo-row">
-              <BrandMark size={20} variant="light" accentColor="#2F81F7" />
+              <BrandMark size={20} variant="light" accentColor="#1769E0" />
               <div className="login-logo">
-                Procure<span className="logo-flow">Flow</span>
-                <span className="login-ai-tag">AI</span>
+                Signoff
               </div>
             </div>
             <p className="login-tagline">Sign in to your workspace</p>

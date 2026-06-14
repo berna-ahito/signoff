@@ -45,9 +45,8 @@ export function Layout({ role, onLogout, pageTitle, children }: Props) {
       >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <BrandMark size={22} accentColor="#2F81F7" />
-            <span>Procure<span className="logo-flow">Flow</span></span>
-            <span className="logo-ai">AI</span>
+            <BrandMark size={22} accentColor="#1769E0" />
+            <span>Signoff</span>
           </div>
         </div>
 
