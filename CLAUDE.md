@@ -1,9 +1,9 @@
-# ProcureFlow AI — Claude Code Instructions
+# Signoff — Claude Code Instructions
 
-You are working on ProcureFlow AI, a portfolio-grade full-stack AI workflow system.
+You are working on Signoff, a portfolio-grade full-stack AI workflow system.
 
 ## Product
-ProcureFlow AI is an AI-ready procurement intake, approval, RFQ drafting, and audit system.
+Signoff is an AI-ready procurement intake, approval, RFQ drafting, and audit system.
 
 It turns messy purchase requests into structured, validated, auditable procurement data.
 

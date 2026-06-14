@@ -1,14 +1,14 @@
 <div align="center">
 
-# Signoff
+<img src="docs/assets/signoff-header.svg" alt="Signoff — AI-assisted approval workflow" width="900">
 
 **AI-assisted approval workflow with RBAC, audit logs, and human review.**
 
-A full-stack procurement approval system built on purchase-request intake, configurable role-based routing, AI risk classification, and an append-only audit trail — with humans making every approve/reject decision. Originally developed under the repo name `procureflow-ai`.
+A full-stack procurement approval system built on purchase-request intake, configurable role-based routing, AI risk classification, and an append-only audit trail — with humans making every approve/reject decision.
 
-[![Backend Tests](https://img.shields.io/badge/backend-170%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/procureflow-ai)
-[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)](https://github.com/berna-ahito/procureflow-ai)
-[![Frontend Tests](https://img.shields.io/badge/frontend-37%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/procureflow-ai)
+[![Backend Tests](https://img.shields.io/badge/backend-170%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
+[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
+[![Frontend Tests](https://img.shields.io/badge/frontend-38%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
 </div>
@@ -50,7 +50,7 @@ Signoff routes every purchase request through the right approval chain — manag
 | UI | shadcn/ui · Tailwind CSS · Motion |
 | Charts | Recharts |
 | AI | Groq API (MockProvider default — no key needed) |
-| Tests | pytest · 170 passing · 95% coverage · Vitest · 37 passing |
+| Tests | pytest · 170 passing · 95% coverage · Vitest · 38 passing |
 | Deploy | Render (API) · Vercel (frontend) · Neon (database) |
 
 ---
@@ -149,7 +149,7 @@ VITE_API_BASE_URL=https://your-render-service.onrender.com
 # Backend (170 passing, 95% coverage)
 py -m pytest --cov=app --cov-report=term-missing
 
-# Frontend (37 passing)
+# Frontend (38 passing)
 cd frontend && npm test -- --run
 ```
 

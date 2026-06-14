@@ -1,6 +1,6 @@
-# ProcureFlow AI Specification
+# Signoff Specification
 
-ProcureFlow AI is an AI-ready procurement intake, approval, RFQ drafting, and audit system.
+Signoff is an AI-ready procurement intake, approval, RFQ drafting, and audit system.
 
 Core flow:
 1. Employee submits purchase request.
