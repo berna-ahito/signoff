@@ -2,9 +2,9 @@
 
 <img src="docs/assets/signoff-header.svg" alt="Signoff: AI-assisted approval workflow" width="900">
 
-**A procurement approval app for purchase requests, approval routing, AI-assisted review, and audit trails.**
+**Procurement approval app for purchase requests, approval routing, risk checks, and audit trails.**
 
-Signoff helps teams manage purchase requests in one place. Employees submit requests, managers and finance reviewers approve or reject them, and every decision is saved in an audit trail. AI helps review requests and flag missing information, but people make the final approval decisions.
+Signoff lets employees submit purchase requests, routes them to the right reviewers, flags risk with AI, and records every decision.
 
 [![Backend Tests](https://img.shields.io/badge/backend-170%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
 [![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
@@ -53,6 +53,8 @@ Signoff gives that process one place to live. It keeps the request, approval pat
 ---
 
 ## Try the demo
+
+Live demo: https://signoff-4gbs.onrender.com
 
 The demo includes seeded purchase requests so reviewers can see the dashboard, request list, role-based approval flow, and audit log immediately. The data is fake and uses realistic purchase amounts.
 
@@ -105,7 +107,7 @@ Open `http://localhost:5173`. Demo credentials are listed in Try the demo above.
 
 ## Deploy
 
-Live demo URL will be added after the new Render service is created.
+Live demo: https://signoff-4gbs.onrender.com
 
 Signoff is deployed as one Render web service. The backend serves the built frontend.
 
