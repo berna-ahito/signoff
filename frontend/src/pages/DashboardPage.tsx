@@ -140,6 +140,18 @@ export function DashboardPage({ role }: Props) {
         )}
       </div>
 
+      <div className="approval-flow-cue" aria-hidden="true" title="Standard Approval Workflow">
+        <div className="flow-step">Submitted</div>
+        <div className="flow-arrow">→</div>
+        <div className="flow-step flow-ai">AI Reviewed</div>
+        <div className="flow-arrow">→</div>
+        <div className="flow-step">Manager</div>
+        <div className="flow-arrow">→</div>
+        <div className="flow-step">Finance</div>
+        <div className="flow-arrow">→</div>
+        <div className="flow-step flow-audit">Audit Logged</div>
+      </div>
+
       <div className="stats-bar" aria-label="Summary statistics">
         <div className="stat-card">
           <div className="stat-label">Total Requests</div>
