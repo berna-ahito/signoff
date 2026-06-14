@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: procureflow-api
+    name: signoff
     env: python
     region: oregon
     plan: free
@@ -20,7 +20,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: CORS_ORIGINS
-        value: https://procureflow.vercel.app
+        sync: false
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: 30
       - key: REFRESH_TOKEN_EXPIRE_DAYS
