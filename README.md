@@ -1,7 +1,6 @@
 <div align="center">
 
 <img src="docs/assets/signoff-header.svg" alt="Signoff procurement approval app" width="900">
-</div>
 
 # Signoff
 
@@ -13,6 +12,8 @@ Signoff helps teams turn scattered purchase requests into structured approvals. 
 [![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
 [![Frontend Tests](https://img.shields.io/badge/frontend-38%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+
+</div>
 
 ---
 
