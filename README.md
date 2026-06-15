@@ -1,7 +1,6 @@
 <div align="center">
 
 <img src="docs/assets/signoff-header.svg" alt="Signoff procurement approval app" width="900">
-
 </div>
 
 # Signoff
