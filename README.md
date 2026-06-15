@@ -2,6 +2,7 @@
 
 <img src="docs/assets/signoff-header.svg" alt="Signoff procurement approval app" width="900">
 
+##
 
 **Procurement approval app for request intake, approval routing, AI risk checks, and audit trails.**
 
