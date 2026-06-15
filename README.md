@@ -2,8 +2,6 @@
 
 <img src="docs/assets/signoff-header.svg" alt="Signoff procurement approval app" width="900">
 
-# Signoff
-
 **Procurement approval app for request intake, approval routing, AI risk checks, and audit trails.**
 
 Signoff helps teams turn scattered purchase requests into structured approvals. Employees submit requests, Signoff routes each request to the right reviewers, AI flags risk or missing information, and every decision is recorded.
