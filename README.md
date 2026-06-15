@@ -1,10 +1,12 @@
 <div align="center">
 
-<img src="docs/assets/signoff-header.svg" alt="Signoff: AI-assisted approval workflow" width="900">
+<img src="docs/assets/signoff-header.svg" alt="Signoff procurement approval app" width="900">
 
-**Procurement approval app for purchase requests, approval routing, risk checks, and audit trails.**
+**Procurement approval app for request intake, approval routing, AI risk checks, and audit trails.**
 
-Signoff lets employees submit purchase requests, routes them to the right reviewers, flags risk with AI, and records every decision.
+Signoff lets employees submit purchase requests, routes each request to the right reviewers, flags risk with AI, and records every decision.
+
+It is designed for teams that need a clearer way to review spending requests without losing decisions in email threads or spreadsheets.
 
 [![Backend Tests](https://img.shields.io/badge/backend-170%20tests-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
 [![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)](https://github.com/berna-ahito/signoff)
@@ -17,9 +19,9 @@ Signoff lets employees submit purchase requests, routes them to the right review
 
 ## The problem this solves
 
-Procurement requests often start in email, chat, or spreadsheets. That makes it hard to know who approved a request, whether the right person reviewed it, and what changed after the decision.
+Procurement requests often start in email, chat, or spreadsheets. That makes approvals, reviewer responsibility, and decision history hard to track.
 
-Signoff gives that process one place to live. It keeps the request, approval path, AI review, and audit history together.
+Signoff keeps the request, approval path, AI review, and audit history in one place.
 
 ---
 
@@ -29,7 +31,7 @@ Signoff gives that process one place to live. It keeps the request, approval pat
 |---|---|
 | Request intake | Employees submit purchase requests with category, urgency, amount, vendor details, and attachments. |
 | Approval routing | Requests move through manager and finance review based on amount and category rules. |
-| AI-assisted review | AI flags risk, missing information, and can draft an RFQ. It does not approve or reject requests. |
+| AI-assisted review | AI flags risk or missing information, but does not approve or reject requests. |
 | Audit trail | Status changes, reviewers, notes, and timestamps are recorded for review. |
 | Role-based access | Requesters, managers, finance users, and admins see different actions and data. |
 | Dashboard | Shows request volume, approval status, spend by category, and recent activity. |
@@ -64,6 +66,14 @@ The demo includes seeded purchase requests so reviewers can see the dashboard, r
 | bob@test.com | bob123 | Manager |
 | carol@test.com | carol123 | Finance |
 | admin@test.com | admin123 | Admin |
+
+Suggested demo path:
+
+1. Log in as Alice to submit a purchase request.
+
+2. Log in as Bob or Carol to review routed requests.
+
+3. Log in as Admin to inspect users, approval rules, and the audit log.
 
 ---
 
